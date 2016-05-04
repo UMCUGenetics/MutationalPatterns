@@ -7,7 +7,22 @@ Date: 2015-11-04
 Author: Francis Blokzijl
 Maintainer: Francis Blokzijl <F.Blokzijl@umcutrecht.nl>
 License: MIT + file LICENSE
-Depends: R (>= 3.2.4), VariantAnnotation, GenomicRanges, IRanges, ggplot2, BSgenome, RColorBrewer, BiocGenerics, gplots, NMF, reshape2, plyr, pracma
+Depends: R (>= 3.2.4), 
+         VariantAnnotation, 
+         GenomicRanges, 
+         IRanges, 
+         ggplot2, 
+         BSgenome, 
+         RColorBrewer, 
+         BiocGenerics, 
+         gplots, 
+         NMF, 
+         reshape2, 
+         plyr, 
+         pracma,
+         doRNG,
+         doParallel,
+         reshape
 ZipData: NA
 LazyData: false
 RoxygenNote: 5.0.1

@@ -44,7 +44,21 @@ spectra2 = grid.arrange(plot5, plot4, ncol=2, widths=c(3,2))
 # make 96 count matrix
 mut_matrix = make_mut_matrix(vcf_list = vcfs, ref_genome = ref_genome)
 # plot 96 profile of three samples
-plot = plot_96_profile(mut_matrix[,c(1,4,7)], colors = default_colors_6) 
+plot = plot_96_profile(mut_matrix[,c(1,4,7)]) 
+plot
+
+# ------ COMPARE PROFLIES ------
+
+# get a p-value for the significance of a difference between two profiles
+comparison <- profile_bootstrap_comparison(mut_matrix[,1], mut_matrix[,4], random.seed = 123)
+comparison$overallPvalue
+plot_96_profile(mut_matrix[,c(1,4)]) 
+
+# get the mutation types that significantly differ between two profiles
+comparison <- profile_bootstrap_comparison(mut_matrix[,1], mut_matrix[,7], random.seed = 123)
+comparison$mutTypePvalues_corrected[comparison$mutTypePvalues_corrected < 0.05]
+plot_96_profile(mut_matrix[,c(1,7)]) 
+
 
 # ------ EXTRACT SIGNATURES ------
 

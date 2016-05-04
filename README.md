@@ -141,6 +141,35 @@ Plot 96 profile of three samples
   ```
   ![96_mutation_profile](https://github.com/CuppenResearch/MutationalPatterns/blob/develop/images/96_profile.png)
 
+
+### Compare Profiles
+
+Compare two profiles by bootstrapping analysis and get a p-value for their difference
+  ```{r}
+  comparison <- profile_bootstrap_comparison(mut_matrix[,1], #colon1
+                                             mut_matrix[,4], #intestine1
+                                             random.seed = 123)
+  comparison$overallPvalue
+  ```
+  ```
+  > 0.136
+  ```
+
+
+Identify what mutations cause significant differences between two profiles and get their p-values
+  ```{r}
+  comparison <- profile_bootstrap_comparison(mut_matrix[,1], #colon1
+                                             mut_matrix[,7], #liver1
+                                             random.seed = 123)
+  comparison$mutTypePvalues_corrected[comparison$mutTypePvalues_corrected < 0.05]
+  ```
+  ```
+  GCG C>G    ACG C>T    CCG C>T    GCG C>T    TCA C>T    TCG C>T    ATG T>C    CTG T>G    GTG T>G    TTC T>G 
+  0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.03919184 0.00000000 0.00000000
+  ```
+
+
+
 ### Extract Signatures
 
 Estimate optimal rank for NMF mutation matrix decomposition
