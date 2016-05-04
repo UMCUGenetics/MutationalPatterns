@@ -82,6 +82,10 @@ plot_96_profile(nmf_res$reconstructed)
 # compare reconstructed 96 profile of sample 1 with orignal profile
 plot_compare_profiles(mut_matrix[,1], nmf_res$reconstructed[,1], profile_names = c("Original", "Reconstructed"))
 
+# control if the reconstruction significantly matches the original
+profile_bootstrap_comparison(mut_matrix[,1], nmf_res$reconstructed[,1])$overallPvalue
+
+
 # ------ REFIT SIGNATURES ------
 
 # download signatures from pan-cancer study Alexandrov et al.
@@ -102,6 +106,10 @@ plot_contribution(fit_res$contribution[select,], coord_flip = T)
 
 # compare reconstructed from refit with original profile
 plot_compare_profiles(mut_matrix[,1], fit_res$reconstructed[,1], profile_names = c("Original", "Reconstructed \n cancer signatures"))
+
+# control if the reconstruction significantly matches the original
+profile_bootstrap_comparison(mut_matrix[,1], fit_res$reconstructed[,1])$overallPvalue
+
 
 
 # ------ RAINFALL PLOT ------

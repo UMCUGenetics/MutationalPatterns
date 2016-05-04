@@ -211,6 +211,15 @@ Compare reconstructed mutation profile with original mutation profile
 
   ![originalVSreconstructed](https://github.com/CuppenResearch/MutationalPatterns/blob/develop/images/original_VS_reconstructed.png)
 
+Control if the reconstruction significantly matches the original
+
+  ```{r}
+  profile_bootstrap_comparison(mut_matrix[,1], nmf_res$reconstructed[,1])$overallPvalue
+  ```
+  ```
+  > 1
+  ```
+
 ### Fit 96 mutation profiles to known signatures  
 
 Download signatures from pan-cancer study Alexandrov et al.
@@ -243,6 +252,17 @@ Compare reconstructed mutation profile of sample 1 using cancer signatures with 
   ```
 
   ![contribution](https://github.com/CuppenResearch/MutationalPatterns/blob/develop/images/original_VS_reconstructed_cancer_sigs.png)
+
+
+Control if the reconstruction significantly matches the original
+
+  ```{r}
+  profile_bootstrap_comparison(mut_matrix[,1], fit_res$reconstructed[,1])$overallPvalue
+  ```
+  ```
+  > 0.92
+  ```
+
 
 ### Rainfall plot
 
