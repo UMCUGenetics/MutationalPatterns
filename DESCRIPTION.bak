@@ -8,7 +8,7 @@ Author: Francis Blokzijl, Roel Janssen, Ruben van Boxtel, Edwin Cuppen
 Maintainer: Francis Blokzijl <F.Blokzijl@umcutrecht.nl>, Roel Janssen <roel@gnu.org>
 License: MIT + file LICENSE
 URL: https://github.com/CuppenResearch/MutationalPatterns
-Imports: BiocGenerics (>= 0.16.1), VariantAnnotation (>= 1.16.4),
+Imports: BiocGenerics (>= 0.18.0), VariantAnnotation (>= 1.16.4),
        reshape2 (>= 1.4.1), plyr (>= 1.8.3), ggplot2 (>= 1.0.1),
        pracma (>= 1.8.8), SummarizedExperiment (>= 1.0.2), IRanges (>= 2.4.8),
        GenomeInfoDb (>= 1.6.3), Biostrings (>= 2.38.4), gridExtra (>= 2.0.0)
