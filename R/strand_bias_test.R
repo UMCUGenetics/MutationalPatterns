@@ -46,6 +46,7 @@ strand_bias_test = function(strand_occurrences)
     group = NULL
     type = NULL
     strand = NULL
+    variable = NULL
 
     # statistical test for strand ratio
     # poisson test

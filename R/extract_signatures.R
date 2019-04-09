@@ -37,15 +37,11 @@ extract_signatures = function(mut_matrix, rank, nrun = 200)
                     "samples in the input matrix.") )
 
     # Calculate NMF
-    orig_seed <- getGeneric("seed")
-    setGeneric("seed", NMF::seed)
     res = nmf(mut_matrix, rank=rank, method="brunet", nrun=nrun, seed=123456)
 
     # Find signatures and contribution of signatures
     signatures = NMF::basis(res)
     contribution = NMF::coef(res)
-
-    setGeneric("seed", orig_seed)
 
     # Reconstruct mutation matrix
     reconstructed = signatures %*% contribution

@@ -3,10 +3,11 @@
 #' @param df Dataframe result from enrichment_depletion_test()
 #' @return Plot with two parts. 1: Barplot with no. mutations expected and
 #' observed per region. 2: Effect size of enrichment/depletion
-#' (log2ratio) with results significance test. The plots are drawn directly onto a device by grid arrange and therefore cannot be saved as an object.
+#' (log2ratio) with results significance test.
 #'
 #' @import ggplot2
-#' @importFrom gridExtra grid.arrange
+#' @importFrom cowplot plot_grid
+#' @importFrom reshape2 melt
 #'
 #' @examples
 #' ## See the 'genomic_distribution()' example for how we obtained the
@@ -91,5 +92,6 @@ plot_enrichment_depletion = function(df)
         ylab("log2(observed/expected)") +
         scale_x_discrete(breaks = NULL)
 
-    grid.arrange(plot1, plot2, heights = c(2,1.2))
+    output <- cowplot::plot_grid (plot1, plot2, ncol=1, nrow=2, rel_heights = c(2,1.2))
+    return(output)
 }

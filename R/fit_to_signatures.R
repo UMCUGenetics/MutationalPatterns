@@ -52,17 +52,15 @@
 fit_to_signatures = function(mut_matrix, signatures)
 {
     # make sure dimensions of input matrix are correct
-    if (dim(mut_matrix)[1] != 96)
-        stop( paste("Mutation count matrix input should have",
-                    "dimensions 96 X n samples") )
+    if (dim(mut_matrix)[1] != dim(signatures)[1])
+        stop(paste("Mutation matrix and signatures input have",
+                   "different number of mutational features"))
 
-    if (dim(signatures)[1] != 96)
-        stop("Signatures input should have dimensions 96 X n signatures")
-
+    n_features = dim(mut_matrix)[1]
     n_samples = dim(mut_matrix)[2]
     n_signatures = dim(signatures)[2]
     lsq_contribution = matrix(NA, nrow=n_signatures, ncol=n_samples)
-    lsq_reconstructed = matrix(NA, nrow=96, ncol=n_samples)
+    lsq_reconstructed = matrix(NA, nrow=n_features, ncol=n_samples)
 
     # Process each sample
     for (i in 1:ncol(mut_matrix))

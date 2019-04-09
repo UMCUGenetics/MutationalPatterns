@@ -447,7 +447,7 @@ plot_compare_profiles(mut_mat[,1],
 Download mutational signatures from the COSMIC website:
 
 <<download_cancer_signatures>>=
-sp_url <- paste("http://cancer.sanger.ac.uk/cancergenome/assets/",
+sp_url <- paste("https://cancer.sanger.ac.uk/cancergenome/assets/",
                 "signatures_probabilities.txt", sep = "")
 
 cancer_signatures = read.table(sp_url, sep = "\t", header = TRUE)

@@ -1,148 +1,203 @@
+MutationalPatterns v1.6.2 (Release date: 2018-10-18)
+=====================================================
+
+Changes:
+
+* Update Francis's e-mail address.
+
+
+MutationalPatterns v1.4.3 (Release date: 2018-03-16)
+=====================================================
+
+Changes:
+
+* Bugfixes:
+  + Fix colors in plot_rainfall so that missing substitutions don't shift colors.
+  + Return a ggplot object from plot_enrichment_depletion.
+
+* Other:
+  + Move gridExtra to suggested packages because it isn't
+    used in the code.  The vignette does use it to show
+    how plots can be combined into a single figure.
+
+
 MutationalPatterns v1.4.2 (Release date: 2017-12-19)
 =====================================================
 
-Improvements.
-* Improve error handling with parallel functions.
+Changes:
 
-Bugfixes:
-* Fix bug related to generic function overlap between NMF and DelayedArray.
-* Up the cowplot dependency to fix empty plots bug.
+* Improvements.
+  + Improve error handling with parallel functions.
+
+* Bugfixes:
+  + Fix bug related to generic function overlap between NMF and DelayedArray.
+  + Up the cowplot dependency to fix empty plots bug.
+
 
 MutationalPatterns v1.4.1 (Release date: 2017-11-13)
 =====================================================
 
-Improvements:
-* Avoid letting lines run off the paper in the PDF vignette.
+Changes:
+
+* Improvements:
+  + Avoid letting lines run off the paper in the PDF vignette.
+
 
 MutationalPatterns v1.4.0 (Release date: 2017-10-30)
 =====================================================
 
-Bioconductor 3.6 release.
+Changes:
+
+* Bioconductor 3.6 release.
+
 
 MutationalPatterns v1.3.2 (Release date: 2017-10-24)
 =====================================================
 
-Bugfixes:
-* Removed deprecated functions from previous release.
-* Improved examples in documentation.
+Changes:
+
+* Bugfixes:
+  + Removed deprecated functions from previous release.
+  + Improved examples in documentation.
+
 
 MutationalPatterns v1.3.1 (Release date: 2017-10-24)
 =====================================================
 
-Bugfixes:
-* Fix running of the code examples.
+Changes:
+
+* Bugfixes:
+  + Fix running of the code examples.
+
 
 MutationalPatterns v1.3.0 (Release date: 2017-10-22)
 =====================================================
 
-Bugfixes:
-* To determine the transcriptional strand of mutations in genes, 
-  all mutations that overlap with multiple genes were excluded. 
-  When these genes are on different strands, it can indeed not
-  be determined whether a mutation is on the transcribed or
-  untransribed strand. However, if these overlapping genes are all
-  on the same strand, the transcriptional strand can be determined,
-  but these were unneccesarily removed from the analysis.
-  This bug is now fixed, and as a result more mutations are now
-  included in the analysis.
-  This bugfix influences the results of:
-  'mut_strand' (previously 'strand_from_vcf') and 'mut_matrix_stranded'
+Changes:
 
-Renamed functions:
-* 'strand_from_vcf' to 'mut_strand'
-* 'mutation_types' to 'mut_type'
-* 'mutation_context' to 'mut_context'
+* Bugfixes:
+  + To determine the transcriptional strand of mutations in genes,
+    all mutations that overlap with multiple genes were excluded.
+    When these genes are on different strands, it can indeed not
+    be determined whether a mutation is on the transcribed or
+    untransribed strand. However, if these overlapping genes are all
+    on the same strand, the transcriptional strand can be determined,
+    but these were unneccesarily removed from the analysis.
+    This bug is now fixed, and as a result more mutations are now
+    included in the analysis.
+    This bugfix influences the results of:
+    'mut_strand' (previously 'strand_from_vcf') and 'mut_matrix_stranded'
 
-New features & parameter changes:
-* Replicative strand bias analyses
+* Renamed functions:
+  + 'strand_from_vcf' to 'mut_strand'
+  + 'mutation_types' to 'mut_type'
+  + 'mutation_context' to 'mut_context'
+
+* New features & parameter changes:
+  + Replicative strand bias analyses
     - 'mut_strand' and 'mut_matrix_stranded' can now be executed in two modes:
-    'transcription' (default) or 'replication'
+      'transcription' (default) or 'replication'
     - All downstream analyses can be performed for both modes with
-    'strand_occurrences', 'strand_bias_test' and 'plot_strand_bias'
-* Condensed plotting option for 'plot_96_profile' and 'plot_192_profile'
-  condensed = F (default), or condensed = T
+      'strand_occurrences', 'strand_bias_test' and 'plot_strand_bias'
+  + Condensed plotting option for 'plot_96_profile' and 'plot_192_profile'
+    condensed = F (default), or condensed = T
+  + Sample can be hierarchically clustered.
 
-New functions:
-* 'plot_contribution_heatmap': to visualize the relative contribution of
-  mutational signatures in a heatmap. Samples can be hierarchically clustered.
-* 'cos_sim': to calculate the cosine similarity between two vectors.
-* 'cos_sim_matrix': to calculate all pairwise similarities between mutational profiles
-* 'cluster_signatures': to hierarchically cluster signatures based on cosine similarity
-* 'plot_cosine_heatmap': to visualize pairwise cosine similarities between mutational profiles in a heatmap
-  Sample can be hierarchically clustered.
+* New functions:
+  + 'plot_contribution_heatmap': to visualize the relative contribution of
+    mutational signatures in a heatmap. Samples can be hierarchically clustered.
+  + 'cos_sim': to calculate the cosine similarity between two vectors.
+  + 'cos_sim_matrix': to calculate all pairwise similarities between mutational profiles
+  + 'cluster_signatures': to hierarchically cluster signatures based on cosine similarity
+  + 'plot_cosine_heatmap': to visualize pairwise cosine similarities between mutational profiles in a heatmap
 
-MutationalPatterns v1.1.3 (Release date: 2017-04-20)
-=====================================================
-
-Fourth preparation release for Bioconductor 3.5.
-
-Bugfixes:
-* Add missing package to 'Suggest' field.
 
 MutationalPatterns v1.1.3 (Release date: 2017-04-20)
 =====================================================
 
-Third preparation release for Bioconductor 3.5.
+Changes:
 
-Bugfixes:
-* Fix running of a unit test.
-* Fix another build problem for Windows.
+* Fourth preparation release for Bioconductor 3.5.
+
+* Bugfixes:
+  + Add missing package to 'Suggest' field.
+
+
+MutationalPatterns v1.1.3 (Release date: 2017-04-20)
+=====================================================
+
+Changes:
+
+* Third preparation release for Bioconductor 3.5.
+
+* Bugfixes:
+  + Fix running of a unit test.
+  + Fix another build problem for Windows.
+
 
 MutationalPatterns v1.1.2 (Release date: 2017-04-18)
 =====================================================
 
-Third preparation release for Bioconductor 3.5.
+Changes:
 
-Bugfixes:
-* Properly read external data for tests.
-* Fix build problems on Windows.
+* Third preparation release for Bioconductor 3.5.
+
+* Bugfixes:
+  + Properly read external data for tests.
+  + Fix build problems on Windows.
 
 
 MutationalPatterns v1.1.1 (Release date: 2017-04-12)
 =====================================================
 
-Second preparation release for Bioconductor 3.5.
+Changes:
+
+* Second preparation release for Bioconductor 3.5.
 
 
 MutationalPatterns v1.1.0 (Release date: 2017-04-06)
 =====================================================
 
-Preparations for Bioconductor release 3.5.
+Changes:
 
-Interface changes:
-* 'read_vcfs_as_granges':  The 'genome' parameter
-  must now be the name of a BSgenome library, to prevent
-  problems with seqlevels style.
+* Preparations for Bioconductor release 3.5.
 
-  The function now accepts an optional 'group' parameter to
-  use a subset of chromosomes.
+* Interface changes:
+  + 'read_vcfs_as_granges':  The 'genome' parameter
+    must now be the name of a BSgenome library, to prevent
+    problems with seqlevels style.
 
-  It also accepts  the new optional 'check_alleles'
-  parameter to significantly speed up the reading of VCF files.
+    The function now accepts an optional 'group' parameter to
+    use a subset of chromosomes.
 
-* 'plot_contribution': This function now accepts an
-  optional parameter 'palette' to specify custom colors.
+    It also accepts  the new optional 'check_alleles'
+    parameter to significantly speed up the reading of VCF files.
 
-Performance updates:
-* Implement parallel execution in 'read_vcfs_as_granges',
-  'mut_matrix' and 'mut_matrix_stranded'.
+  + 'plot_contribution': This function now accepts an
+    optional parameter 'palette' to specify custom colors.
 
-Bugfixes:
-* Fix 'mut_type_occurences' to handle missing types.
-* Fix 'mut_matrix' and 'mut_matrix_stranded' to emit warnings
-  when processing empty GRanges.
-* Fix inconsistencies in the README and the vignette.
+* Performance updates:
+  + Implement parallel execution in 'read_vcfs_as_granges',
+    'mut_matrix' and 'mut_matrix_stranded'.
 
-Other changes:
-* Various vignette updates.
-* Added unit tests for 'read_vcfs_as_granges', 'mut_matrix',
-  and 'mut_matrix_stranded'.
+* Bugfixes:
+  + Fix 'mut_type_occurences' to handle missing types.
+  + Fix 'mut_matrix' and 'mut_matrix_stranded' to emit warnings
+    when processing empty GRanges.
+  + Fix inconsistencies in the README and the vignette.
+
+* Other changes:
+  + Various vignette updates.
+  + Added unit tests for 'read_vcfs_as_granges', 'mut_matrix',
+    and 'mut_matrix_stranded'.
 
 
 MutationalPatterns v1.0.0 (Release date: 2016-10-19)
 =====================================================
 
-Bioconductor release 3.4.
+Changes:
+
+* Bioconductor release 3.4.
 
 
 MutationalPatterns v0.99.6 (Release date: 2016-10-14)
@@ -150,8 +205,10 @@ MutationalPatterns v0.99.6 (Release date: 2016-10-14)
 
 Changes:
 
-* Renamed functions: 'mut_type_occurences' to 'mut_type_occurrences',
-    'strand_occurences' to 'strand_occurrences'.
+* Renamed functions:
+  + 'mut_type_occurences' to 'mut_type_occurrences',
+  + 'strand_occurences' to 'strand_occurrences'.
+
 
 MutationalPatterns v0.99.5 (Release date: 2016-10-06)
 =====================================================
@@ -171,17 +228,20 @@ Changes:
 * Internal package loading changes.
 * Removed files that do not belong to the package.
 
+
 MutationalPatterns v0.99.3 (Release date: 2016-09-28)
 =====================================================
 
 Changes:
 
-* Renamed functions: 'get_mut_context' to 'mutation_context',
-    'get_type_context' to 'type_context',
-    'get_muts' to 'mutations_from_vcf',
-    'get_strand' to 'strand_from_vcf'.
-* Added an explanation for the difference between
-    SomaticSignatures and MutationalPatterns in the vignette.
+* Renamed functions:
+  + 'get_mut_context' to 'mutation_context',
+  + 'get_type_context' to 'type_context',
+  + 'get_muts' to 'mutations_from_vcf',
+  + 'get_strand' to 'strand_from_vcf'.
+
+* Added an explanation for the difference between SomaticSignatures
+  and MutationalPatterns in the vignette.
 
 
 MutationalPatterns v0.99.2 (Release date: 2016-09-23)
@@ -198,9 +258,17 @@ MutationalPatterns v0.99.1 (Release date: 2016-09-13)
 
 Changes:
 
-* Renamed functions: 'read_vcf' to 'vcf_to_granges'.
-* Removed functions: 'bed_to_granges', 'estimate_rank', 'rename_chrom'.
-* Parameter changes: 'plot_rainfall', 'vcf_to_granges'
+* Renamed functions:
+  + 'read_vcf' to 'vcf_to_granges'.
+
+* Removed functions:
+  + 'bed_to_granges',
+  + 'estimate_rank',
+  + 'rename_chrom'.
+
+* Parameter changes:
+  + 'plot_rainfall',
+  + 'vcf_to_granges'.
 
 
 MutationalPatterns v0.99.0 (Release date: 2016-09-12)

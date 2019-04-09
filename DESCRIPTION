@@ -3,13 +3,13 @@ Type: Package
 Title: Comprehensive genome-wide analysis of mutational processes
 Description: An extensive toolset for the characterization and visualization
     of a wide range of mutational patterns in base substitution catalogs.
-Version: 1.4.2
-Date: 2017-12-19
+Version: 1.6.2
+Date: 2018-10-18
 Author: Francis Blokzijl, Roel Janssen, Ruben van Boxtel, Edwin Cuppen
-Maintainer: Francis Blokzijl <F.Blokzijl@umcutrecht.nl>,
-    Roel Janssen <R.R.E.Janssen-10@umcutrecht.nl>
+Maintainer: Roel Janssen <R.R.E.Janssen-10@umcutrecht.nl>,
+    Francis Blokzijl <f.blokzijl@hubrecht.eu>
 License: MIT + file LICENSE
-URL: https://doi.org/10.1101/071761
+URL: https://doi.org/10.1186/s13073-018-0539-0
 Imports:
     stats,
     parallel,
@@ -24,7 +24,6 @@ Imports:
     IRanges (>= 2.6.0),
     GenomeInfoDb (>= 1.12.0),
     Biostrings (>= 2.40.0),
-    gridExtra (>= 2.2.1),
     ggdendro (>= 0.1-20),
     cowplot (>= 0.9.2)
 Depends:
@@ -33,11 +32,12 @@ Depends:
     NMF (>= 0.20.6)
 Suggests:
     BSgenome (>= 1.40.0),
-    BiocStyle (>= 2.0.3),
-    biomaRt (>= 2.28.0),
-    BSgenome.Hsapiens.UCSC.hg19 (>= 1.4.0),
     BSgenome.Hsapiens.1000genomes.hs37d5 (>= 0.99.1),
+    BSgenome.Hsapiens.UCSC.hg19 (>= 1.4.0),
+    BiocStyle (>= 2.0.3),
     TxDb.Hsapiens.UCSC.hg19.knownGene (>= 3.2.2),
+    biomaRt (>= 2.28.0),
+    gridExtra (>= 2.2.1),
     rtracklayer (>= 1.32.2),
     testthat
 biocViews: Genetics, SomaticMutation

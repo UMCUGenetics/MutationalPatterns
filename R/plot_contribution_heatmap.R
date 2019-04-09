@@ -92,6 +92,14 @@ plot_contribution_heatmap = function(contribution, sig_order, cluster_samples = 
     sample_order = rownames(contribution)
   }
 
+  Signature = NULL
+  Sample = NULL
+  Contribution = NULL
+  x = NULL
+  y = NULL
+  xend = NULL
+  yend = NULL
+
   # melt data frame
   contribution_norm.m = melt(contribution_norm)
   # assign variable names

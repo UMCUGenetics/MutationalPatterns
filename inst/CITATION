@@ -7,11 +7,11 @@ citEntry(
         as.person("Ruben van Boxtel"),
         as.person("Edwin Cuppen")
     ),
-    year = 2017,
-    journal = "bioRxiv",
-    doi = "10.1101/071761",
+    year = 2018,
+    journal = "Genome Medicine",
+    doi = "10.1186/s13073-018-0539-0",
     textVersion =
-        paste("Francis Blokzijl, Roel Janssen, Ruben van Boxtel, Edwin Cuppen (2017):",
+        paste("Francis Blokzijl, Roel Janssen, Ruben van Boxtel, Edwin Cuppen (2018):",
               "MutationalPatterns: comprehensive genome-wide analysis of mutational processes",
-              "bioRxiv", "doi:10.1101/071761")
+              "Genome Medicine", "doi:10.1186/s13073-018-0539-0")
 )

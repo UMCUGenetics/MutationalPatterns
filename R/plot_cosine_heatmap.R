@@ -97,6 +97,14 @@ plot_cosine_heatmap = function(cos_sim_matrix, col_order, cluster_rows = TRUE, m
     sample_order = rownames(cos_sim_matrix)
   }
   
+  Cosine.sim = NULL
+  Signature = NULL
+  Sample = NULL
+  x = NULL
+  y = NULL
+  xend = NULL
+  yend = NULL
+
   # melt
   cos_sim_matrix.m = melt(cos_sim_matrix)
   # assign variable names

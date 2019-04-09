@@ -1,4 +1,4 @@
-# @Date: 27 September 2017
+# @Date: 8 March 2018
 # @Author: Francis Blokzijl
 # @Description: Script for generating figures for MutationalPatterns paper
 
@@ -15,9 +15,9 @@ library(ref_genome, character.only = TRUE)
 # https://wgs11.op.umcutrecht.nl/mutational_patterns_ASCs/data/
 
 # Specify the directory where the data is downloaded to
-data_dir = "...."
+data_dir = "..."
 # Specify your output directory
-out_dir = "...."
+out_dir = "..."
 
 # read MutPat objects
 MutPat_object = readRDS(paste(data_dir, "MutPat_object.rds", sep = ""))
@@ -77,13 +77,39 @@ pdf(paste(out_dir, "contribution.pdf", sep = ""), width = 4, height = 8, useDing
 plot_contribution_bar
 dev.off()
 
+# ------ PROOF OF PRINCIPLE NNLS -----
+
+# Signatures are not normalized yet
+sigs = nmf_res$signatures
+profiles = mut_mat_plus[, sample_order]
+
+fit_res_proof_nnls = fit_to_signatures(profiles, sigs)
+# plot contribution barplot
+plot_contribution_bar_proof_nnls = plot_contribution(fit_res_proof_nnls$contribution, coord_flip = T)
+
+pdf(paste(out_dir, "proof_nnls_contribution.pdf", sep = ""), width = 10, height = 9, useDingbats = F)
+grid.arrange((plot_contribution_bar + ggtitle("NMF")), (plot_contribution_bar_proof_nnls + ggtitle("NNLS")), ncol = 2)
+dev.off()
+
+# Calculate correlation
+nmf_contribution = nmf_res$contribution[,sample_order]
+nnls_contribution = fit_res_proof_nnls$contribution
+
+res_cor = c()
+# for all samples
+for(i in 1:45)
+{
+  res_cor[i] = cor(nmf_contribution[,i], nnls_contribution[,i], method = "pearson")
+}
+mean(res_cor) #0.9787363
+
 # -------- COSMIC CANCER SIGNATURES -------
 
 # download signatures from pan-cancer study Alexandrov et al.
 sp_url = "http://cancer.sanger.ac.uk/cancergenome/assets/signatures_probabilities.txt"
 cancer_signatures = read.table(sp_url, sep = "\t", header = T)
 # match the order to MP standard in mut_matrix
-order = match(row.names(mut_matrix), cancer_signatures$Somatic.Mutation.Type)
+order = match(row.names(mut_mat_adult), cancer_signatures$Somatic.Mutation.Type)
 # reorder cancer signatures dataframe
 cancer_signatures = cancer_signatures[order,]
 # add trinucletiode changes names as row.names
@@ -91,9 +117,16 @@ row.names(cancer_signatures) = cancer_signatures$Somatic.Mutation.Type
 # keep only 96 contributions of the signatures in matrix
 cancer_signatures = as.matrix(cancer_signatures[,4:33])
 
+cos_sim_COSMIC = cos_sim_matrix(cancer_signatures, cancer_signatures)
+cosine_heatmap_COSMIC = plot_cosine_heatmap(round(cos_sim_COSMIC,2), plot_values = T, cluster_rows = F)
+
+pdf(paste(out_dir, "cosine_heatmap_COSMIC.pdf", sep = ""), width = 11, height = 10, useDingbats = F)
+cosine_heatmap_COSMIC
+dev.off()
+
 # similarity of our signatures with cancer cosmic signatures
 cos_sim_signatures = cos_sim_matrix(nmf_res$signatures, cancer_signatures)
-plot_cos_sim_signatures = plot_cosine_heatmap(cos_sim_signatures, cluster_samples = F, plot_values = T)
+plot_cos_sim_signatures = plot_cosine_heatmap(cos_sim_signatures, cluster_rows = F, plot_values = T)
 
 pdf(paste(out_dir, "signatures_sim.pdf", sep = ""), width = 12, height = 2, useDingbats = F)
 plot_cos_sim_signatures + xlab("COSMIC cancer signatures") + theme(axis.text.x = element_text(angle = 0, hjust = 1))
@@ -144,7 +177,7 @@ dev.off()
 cos_sim_ori_rec_cancer = cos_sim_matrix(mut_mat_adult, fit_res$reconstructed)
 x = as.matrix(diag(cos_sim_ori_rec_cancer))
 colnames(x) = "reconstructed"
-plot_fit_reconstructed = plot_cosine_heatmap(x, cluster_samples = F, plot_values = T)
+plot_fit_reconstructed = plot_cosine_heatmap(x, cluster_rows = F, plot_values = T)
 # make as barplot
 df = as.data.frame(x)
 df$sample = row.names(df)
@@ -185,7 +218,7 @@ cancer_signatures_order1 = colnames(cancer_signatures)[hclust_cancer_signatures1
 # cosine similarity with cosmic cancer signatures
 cos_sim_samples_signatures = cos_sim_matrix(mut_mat_adult, cancer_signatures)
 # plot heatmap
-plot_cos_sim_samples_signatures1 = plot_cosine_heatmap(cos_sim_samples_signatures, sig_order = cancer_signatures_order1)
+plot_cos_sim_samples_signatures1 = plot_cosine_heatmap(cos_sim_samples_signatures, col_order = cancer_signatures_order1)
 
 # Fig 3
 pdf(paste(out_dir,"cosine_heatmap_samples_signatures.pdf", sep = ""), width = 8, height = 6.5, useDingbats = F)
@@ -209,7 +242,7 @@ fit_res_norm = fit_res_norm / rowSums(fit_res_norm)
 # for all samples
 decon_res = data.frame()  
 system.time(
-for(i in 1:length(vcf_adult))
+  for(i in 1:ncol(mut_mat_adult))
   {
     res = whichSignatures(tumor.ref = mut_input, 
                           sample.id = colnames(mut_mat_adult)[i], 
@@ -217,36 +250,16 @@ for(i in 1:length(vcf_adult))
                           signature.cutoff = 0)
     
     decon_res = rbind(decon_res, res$weights)
-})
+  })
 # user  system elapsed 
 # 39.133   5.985  46.339 
 
 # rename signatures to just numeric
 colnames(decon_res) = as.character(1:30)
 
-# to check 
-# 4 samples:
-# user system elapsed 
-# 4.385   0.384   4.794 
-# 45 samples:
-# user  system elapsed 
-# 37.502   4.853  42.539
-# 90 samples:
-# user  system elapsed 
-# 80.794   6.438  87.726 
-# 180 samples:
-# user  system elapsed 
-# 157.324  12.478 171.423 
-
-# seems that big oh is: O(n)
-# as expected as it is looped
-
-# # make sample names anonymous for plotting
-# row.names(decon_res) = samples_anonymous
-
 # calculate correlation between the results of the two methods
 res_cor = c()
-for(i in 1:45)
+for(i in 1:nrow(decon_res))
 {
   res_cor[i] = cor(as.numeric(decon_res[i,]), fit_res_norm[i,])
 }
@@ -303,6 +316,44 @@ plot_MP_DS_boxplot = ggplot(df, aes(x=Var2, y=value, fill = Var2)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   theme(legend.position="none") 
 
+# Calculate RSS between original and reconstructed for both methods
+
+
+calculate_RSS = function(profile1, profile2)
+{
+  # Normalize mutation profiles
+  s1_relative = profile1 / sum(profile1)
+  s2_relative = profile2 / sum(profile2)
+  diff = s1_relative - s2_relative
+  
+  # residual sum of squares
+  RSS = sum(diff^2)
+  
+  return(RSS)
+}
+
+RSS_MP = c()
+for(i in 1:45)
+{
+  new_RSS = calculate_RSS(mut_mat_adult[,i], MP_reconstructed[,i])
+  RSS_MP = c(RSS_MP, new_RSS)
+}
+
+RSS_DS = c()
+for(i in 1:45)
+{
+  new_RSS = calculate_RSS(mut_mat_adult[,i], DS_reconstructed[,i])
+  RSS_DS = c(RSS_DS, new_RSS)
+}
+
+# compare RSS between MP & DS
+mean_RSS_MP = mean(RSS_MP) # 0.001379043 
+mean_RSS_DS = mean(RSS_DS) # 0.001400141
+
+# Format
+format(mean_RSS_MP, scientific = TRUE, digits = 3) # "1.38e-03"
+format(mean_RSS_DS, scientific = TRUE, digits = 3) # "1.4e-03"
+
 # Fig S1B
 pdf(paste(out_dir,"boxplot_MP_DS.pdf", sep = ""), width = 3, height = 4, useDingbats = F)
 plot_MP_DS_boxplot
@@ -348,6 +399,56 @@ plot_signatures_strand_bias = plot_signature_strand_bias(nmf_res_strand$signatur
 # Fig 4
 pdf(paste(out_dir,"signatures_strand_bias.pdf", sep = ""), width = 11, height = 5, useDingbats = F)
 grid.arrange(plot_signatures_strand2, plot_signatures_strand_bias, ncol=2, widths=c(5,2))
+dev.off()
+
+# ------- REPLICATION STRAND BIAS -------
+
+repli_file = system.file("extdata/ReplicationDirectionRegions.bed",package = "MutationalPatterns")
+repli_strand = read.table(repli_file, header = TRUE)
+# Store in GRanges object
+repli_strand_granges = GRanges(seqnames = repli_strand$Chr,
+                               ranges = IRanges(start = repli_strand$Start + 1,end = repli_strand$Stop),
+                               strand_info = repli_strand$Class)
+
+
+# UCSC seqlevelsstyle
+seqlevelsStyle(repli_strand_granges) = "UCSC"
+repli_strand_granges
+
+# Make mutation count matrix with transcriptional strand information 
+# (96 trinucleotides * 2 strands = 192 features).
+mut_mat_s_rep <- mut_matrix_stranded(MutPat_object$vcf, ref_genome, repli_strand_granges,mode = "replication")
+# View
+mut_mat_s_rep[1:5, 1:5]
+# Count the number of mutations on each strand, per tissue, per mutation type
+strand_counts_rep <- strand_occurrences(mut_mat_s_rep, by=MutPat_object$tissue)
+head(strand_counts_rep)
+# Perform Poisson test for strand asymmetry significance testing:
+strand_bias_rep <- strand_bias_test(strand_counts_rep)
+strand_bias_rep
+# Plot the mutation spectrum with strand distinction:
+ps1 <- plot_strand(strand_counts_rep, mode = "relative")
+#Plot the effect size (log2(untranscribed/transcribed) of the strand bias. Asteriks indicate significant strand bias.
+ps2 <- plot_strand_bias(strand_bias_rep)
+# Combine the plots into one figure:
+grid.arrange(ps1, ps2)
+
+pdf(paste(out_dir, "rep_strand_bias.pdf", sep = ""), width = 8, height = 7, useDingbats = F)
+grid.arrange(ps1, ps2)
+dev.off()
+
+# ------ RAINFALL PLOT ------
+
+chromosomes = names(genome(vcf_adult[[1]])[1:22])
+
+pdf(paste(out_dir, "rainfalls.pdf", sep = ""), useDingbats = F)
+for(i in 1:45){
+  plot(plot_rainfall(MutPat_object$vcf[[i]], title = MutPat_object$sample_id[i], chromosomes = chromosomes))}
+dev.off()
+
+# choose interesting one: sample 14b
+pdf(paste(out_dir, "rainfall_14b.pdf", sep = ""), width = 11, height = 4, useDingbats = F)
+plot(plot_rainfall(MutPat_object$vcf[[23]], chromosomes = chromosomes, cex=2))
 dev.off()
 
 # ------ GENOMIC DISTRIBUTION ------
