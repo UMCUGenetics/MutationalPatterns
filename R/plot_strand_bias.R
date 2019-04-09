@@ -39,29 +39,34 @@ plot_strand_bias = function(strand_bias, colors)
 {
   # get variable names
   var_names = colnames(strand_bias)[3:4]
-  
+
   # if colors parameter not provided, set to default colors
   if (missing(colors))
     colors=COLORS6
-  
+
   # determine max y value for plotting
   # = log2 ratio with pseudo counts of 0.1
   log2_ratio = log2(  (strand_bias[,3]+0.1) /
                         (strand_bias[,4]+0.1))
-  
+
   # max yvalue for plotting plus
   max = round(max(abs(log2_ratio)), digits = 1) + 0.1
-  
+  pos_stars = abs(log2((strand_bias[, 3])/(strand_bias[, 4] + 0.1)))
+  max_pos_star = round(max(pos_stars[is.finite(pos_stars)]), digits = 1) + 0.1
+  if(max < max_pos_star){
+    max = max_pos_star
+}
+
   # These variables will be available at run-time, but not at compile-time.
   # To avoid compiling trouble, we initialize them to NULL
   type = NULL
   significant = NULL
-  
+
   # add label for infinite values
   label2 = log2(strand_bias$ratio)
   select = which(is.finite(label2))
   label2[select] = " "
-  
+
   # plot strand bias with poisson test results
   plot = ggplot(strand_bias, aes( x = type,
                                   y = log2((strand_bias[,3]+0.1) /
@@ -73,7 +78,7 @@ plot_strand_bias = function(strand_bias, colors)
     geom_text(
       aes(x = type,
           y = log2((strand_bias[,3]) / (strand_bias[,4]+0.1)),
-          ymax = log2((strand_bias[,3]) / (strand_bias[,4]+0.1)), 
+          ymax = log2((strand_bias[,3]) / (strand_bias[,4]+0.1)),
           label = significant,
           vjust = ifelse(sign(log2((strand_bias[,3]) /
                                      (strand_bias[,4]+0.1))) > 0, 0.5, 1)),
@@ -84,9 +89,9 @@ plot_strand_bias = function(strand_bias, colors)
     theme(axis.ticks = element_blank(),
           axis.text.x = element_blank(),
           legend.title = element_blank()) +
-    xlab("") + 
+    xlab("") +
     ylab(paste("log2(", var_names[1], "/", var_names[2], ")", sep = "") ) +
     scale_x_discrete(breaks=NULL)
-  
+
     return(plot)
 }
