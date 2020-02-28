@@ -233,16 +233,18 @@ mut_strand = function(vcf, ranges, type, mode = "transcription")
       }
       
       # get strand info of region
-      strand = ranges[overlap$region_id]$strand_info
+      strand_repli = ranges[overlap$region_id]$strand_info
+      strand_mut = ifelse(vcf$REF[overlap$vcf_id] %in% c("C", "T"), "+", "-")
+      strand_levels = levels(ranges$strand_info)
+      strand_f = (strand_mut == "+" & strand_repli == strand_levels[1]) | (strand_mut == "-" & strand_repli == strand_levels[2])
+      strand = ifelse(strand_f, strand_levels[1], strand_levels[2])
       
-      # Make vector with all positions in input vcf for positions that do
-      # not overlap with gene bodies, report "-"
-      strand2[[m]] = rep("-", length(input_vcf))
-      strand2[[m]][overlap$vcf_id] = as.character(strand)
-      
-      # make factor, levels defines by levels in ranges object
+      #Fill in the strand info where possible
+      strand2 = rep("-", length(vcf))
+      strand2[overlap$vcf_id] = strand
       levels = c(levels(ranges$strand_info), "-")
-      strand2[[m]] = factor(strand2[[m]], levels = levels)
+      strand2 = factor(strand2, levels = levels)
+      
       if (isEmpty(strand2[[m]])) { type = type[type != m] }
     }
   }
