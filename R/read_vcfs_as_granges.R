@@ -180,7 +180,7 @@ read_vcfs_as_granges <- function(vcf_files,
       error = function(cnd) {
         message(conditionMessage(cnd))
         stop("The seqlevelStyle of the vcf could not be changed to that of the reference.
-                     You can run this function with `change_seqnames = F` and `group = 'all'`, 
+                     You can run this function with `change_seqnames = F` and `group = 'none'`, 
                      to prevent this error.
                      However, you then have to make sure that the seqnames (chromosome names) are
                      the same between your vcfs and the reference BSgenome object.
@@ -204,7 +204,7 @@ read_vcfs_as_granges <- function(vcf_files,
       error = function(cnd) {
         message(conditionMessage(cnd))
         stop("The vcf could not be filtered for the specific seqlevels group.
-                     You can run this function with `group = 'all'`, to prevent this error.
+                     You can run this function with `group = 'none'`, to prevent this error.
                      (The message of the internal error causing this problem is shown above.)",
           call. = FALSE
         )
