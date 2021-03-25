@@ -155,3 +155,9 @@ saveRDS(grl, "inst/states/blood_grl.rds")
 vcf <- vcf_l[[1]]
 vcf <- vcf[0]
 writeVcf(vcf, "inst/extdata/empty.vcf")
+
+
+# Reduce size of old example vcfs
+samples = c("colon1", "colon2", "colon3", "intestine1", "intestine2", "intestine3", "liver1", "liver2", "liver3")
+vcf_fnames = paste0("inst/extdata/", samples, "-sample.vcf")
+purrr::map(vcf_fnames, decrease_vcf_size)
