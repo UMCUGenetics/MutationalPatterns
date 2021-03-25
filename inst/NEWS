@@ -1,3 +1,14 @@
+MutationalPatterns v3.1.6
+
+Changes:
+* Version 3.2 of the COSMIC mutational signatures have been included.
+Both the GRCh37 (default), GRCh38 and mm10 version of these signatures can be used.
+Version 3.1 of the COSMIC signatures is also still supported for now.
+* The size of the example vcfs of the colon, intestine and liver
+has been reduced. This was done by removing parts of the file that were discarded
+by read_vcfs_as_granges. The GRanges object that is created after reading in one
+of these vcfs hasn't changed.
+
 MutationalPatterns v3.1.5
 
 Changes:
