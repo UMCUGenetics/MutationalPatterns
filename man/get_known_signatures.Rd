@@ -6,12 +6,13 @@
 \usage{
 get_known_signatures(
   muttype = c("snv", "dbs", "indel", "tsb_snv"),
-  source = c("COSMIC", "SIGNAL", "SPARSE"),
+  source = c("COSMIC", "SIGNAL", "SPARSE", "COSMIC_v3.1", "COSMIC_v3.2"),
   sig_type = c("reference", "exposure", "tissue"),
   incl_poss_artifacts = FALSE,
   tissue_type = c(NA, "Biliary", "Bladder", "Bone", "Breast", "Cervix", "CNS",
     "Colorectal", "Esophagus", "Head", "Kidney", "Liver", "Lung", "Lymphoid", "Myeloid",
-    "Ovary", "Pancreas", "Prostate", "Skin", "Stomach", "Thyroid", "Uterus")
+    "Ovary", "Pancreas", "Prostate", "Skin", "Stomach", "Thyroid", "Uterus"),
+  genome = c("GRCh37", "GRCh38", "mm10")
 )
 }
 \arguments{
@@ -22,7 +23,9 @@ get_known_signatures(
 * 'tsb_snv' transcription strand bias snv;}
 
 \item{source}{The signature source. Possible values:
-* 'COSMIC' (default);
+* 'COSMIC' (default. Currently v3.2);
+* 'COSMIC_v3.1';
+* 'COSMIC_v3.2';
 * 'SIGNAL';
 * 'SPARSE';}
 
@@ -37,6 +40,11 @@ artifacts. (default: TRUE)}
 \item{tissue_type}{The specific tissue to select signatures from.
 Can only be used when looking at tissue specific signatures.
 Keep this at NA to see tissue specific signatures for all tissues.}
+
+\item{genome}{The genome version that is used. This only works for COSMIC signatures.
+* 'GRCh37' (default);
+* 'GRCh38';
+* 'mm10';}
 }
 \value{
 A signature matrix
@@ -47,6 +55,7 @@ It can retrieve signatures for different types of mutations.
 It can also retrieve signatures from different sources.
 Additionally, different signature types can be retrieved.
 (The possible types are: Reference, tissue specific or drug exposure signatures.)
+For the COSMIC signatures both GRCh37, GRCh38 and mm10 versions of the signatures can be used.
 Finally, the user can choose whether to include possible artifacts.
 If no signatures have been defined for a specific combination of options,
 then an error is given.
@@ -54,6 +63,12 @@ then an error is given.
 \details{
 Possible combinations:
 COSMIC:
+- all muttypes. (tsb_snv is the same as in version 3.1)
+- reference
+- Can include possible artifacts for SNVs
+- For the SNVs and DBSs both GRCh37 and GRCh38 versions are available
+
+COSMIC_v3.1:
 - all muttypes.
 - reference
 - Can include possible artifacts for SNVs
@@ -75,8 +90,8 @@ The signatures bundled in this package came from several sources.
 Please cite the associated papers if you use them.
 
 The COSMIC signatures were downloaded from:
-https://cancer.sanger.ac.uk/cosmic/signatures
-We used version 3.1.
+https://cancer.sanger.ac.uk/signatures
+Currently, both version 3.2 and 3.1 are available.
 Paper:  Alexandrov, L.B. et al., 2020, Nature
 
 The SIGNAL signatures were downloaded from:
@@ -99,6 +114,9 @@ get_known_signatures()
 ## including potential artifacts.
 get_known_signatures(incl_poss_artifacts = TRUE)
 
+## Get a GRCh38 version of the signatures
+get_known_signatures(genome = "GRCh38")
+
 ## Get DBS signatures
 get_known_signatures("dbs")
 
@@ -107,6 +125,9 @@ get_known_signatures("indel")
 
 ## Get transcription strand bias snv signatures
 get_known_signatures("tsb_snv")
+
+## Get COSMIC version 3.1 of the signatures
+get_known_signatures(source = "COSMIC_v3.1")
 
 ## Get reference signatures from SIGNAL
 get_known_signatures(source = "SIGNAL")
@@ -131,8 +152,7 @@ get_known_signatures(
   tissue_type = "Bladder"
 )
 
-## If you use an incorrect tissue_type an error is given,
-## showing all possible tissue_types.
+## If you use an incorrect tissue_type an error is given.
 
 ## Get sparse signatures
 get_known_signatures(source = "SPARSE")

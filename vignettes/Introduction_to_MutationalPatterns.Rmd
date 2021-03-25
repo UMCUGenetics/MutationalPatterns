@@ -559,8 +559,8 @@ names of the NMF signatures to these already known signatures. This often makes
 it easier to interpret your results.
 
 To do this you first need to read in some already existing signatures. Here we
-will use signatures from [COSMIC](https://cancer.sanger.ac.uk/cosmic/signatures)
-(v3.1) [@Alexandrov2020]. (We will discuss how to use other signature matrixes
+will use signatures from [COSMIC](https://cancer.sanger.ac.uk/signatures)
+(v3.2) [@Alexandrov2020]. (We will discuss how to use other signature matrixes
 later.)
 ```{r read_signatures}
 signatures = get_known_signatures()
@@ -961,6 +961,13 @@ data.
 signatures_artifacts = get_known_signatures(incl_poss_artifacts = TRUE)
 dim(signatures_artifacts)
 ```
+
+For the COSMIC signatures it is possible to use a version that is normalized to GRCh38 instead of GRCh37.
+```{r load_signatures_grch38}
+signatures_GRCh38 = get_known_signatures(genome = "GRCh38")
+dim(signatures_GRCh38)
+```
+
 
 You can load the SIGNAL reference signatures like this:
 ```{r load_signatures_signal}

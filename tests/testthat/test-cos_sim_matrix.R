@@ -19,5 +19,5 @@ test_that("Output has correct class and data type", {
 })
 
 test_that("Output has expected size", {
-  expect_equal(dim(output), c(9, 54))
+  expect_equal(dim(output), c(9, 60))
 })

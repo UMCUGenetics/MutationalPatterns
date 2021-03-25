@@ -23,5 +23,5 @@ test_that("Output has correct class", {
 })
 
 test_that("Output has correct size", {
-  expect_equal(dim(output), c(216, 7))
+  expect_equal(dim(output), c(240, 7))
 })

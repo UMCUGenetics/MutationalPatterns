@@ -5,16 +5,23 @@
 #' It can also retrieve signatures from different sources.
 #' Additionally, different signature types can be retrieved.
 #' (The possible types are: Reference, tissue specific or drug exposure signatures.)
+#' For the COSMIC signatures both GRCh37, GRCh38 and mm10 versions of the signatures can be used.
 #' Finally, the user can choose whether to include possible artifacts.
 #' If no signatures have been defined for a specific combination of options,
 #' then an error is given.
 #'
 #' Possible combinations:
 #' COSMIC:
+#' - all muttypes. (tsb_snv is the same as in version 3.1)
+#' - reference
+#' - Can include possible artifacts for SNVs
+#' - For the SNVs and DBSs both GRCh37 and GRCh38 versions are available
+#' 
+#' COSMIC_v3.1:
 #' - all muttypes.
 #' - reference
 #' - Can include possible artifacts for SNVs
-#'
+#' 
 #' SIGNAL:
 #'  - SNV. (+ DBS, when using exposure signatures.)
 #'  - all signature types
@@ -32,8 +39,8 @@
 #' Please cite the associated papers if you use them.
 #'
 #' The COSMIC signatures were downloaded from:
-#' https://cancer.sanger.ac.uk/cosmic/signatures
-#' We used version 3.1.
+#' https://cancer.sanger.ac.uk/signatures
+#' Currently, both version 3.2 and 3.1 are available.
 #' Paper:  Alexandrov, L.B. et al., 2020, Nature
 #'
 #' The SIGNAL signatures were downloaded from:
@@ -53,7 +60,9 @@
 #'              * 'indel';
 #'              * 'tsb_snv' transcription strand bias snv;
 #' @param source The signature source. Possible values:
-#'              * 'COSMIC' (default);
+#'              * 'COSMIC' (default. Currently v3.2);
+#'              * 'COSMIC_v3.1';
+#'              * 'COSMIC_v3.2';
 #'              * 'SIGNAL';
 #'              * 'SPARSE';
 #' @param sig_type The type of signature. Possible values:
@@ -65,7 +74,10 @@
 #' @param tissue_type The specific tissue to select signatures from.
 #' Can only be used when looking at tissue specific signatures.
 #' Keep this at NA to see tissue specific signatures for all tissues.
-#'
+#' @param genome The genome version that is used. This only works for COSMIC signatures.
+#'              * 'GRCh37' (default);
+#'              * 'GRCh38';
+#'              * 'mm10';
 #' @return A signature matrix
 #' @export
 #'
@@ -78,6 +90,9 @@
 #' ## including potential artifacts.
 #' get_known_signatures(incl_poss_artifacts = TRUE)
 #'
+#' ## Get a GRCh38 version of the signatures
+#' get_known_signatures(genome = "GRCh38")
+#' 
 #' ## Get DBS signatures
 #' get_known_signatures("dbs")
 #'
@@ -86,6 +101,9 @@
 #'
 #' ## Get transcription strand bias snv signatures
 #' get_known_signatures("tsb_snv")
+#'
+#' ## Get COSMIC version 3.1 of the signatures
+#' get_known_signatures(source = "COSMIC_v3.1")
 #'
 #' ## Get reference signatures from SIGNAL
 #' get_known_signatures(source = "SIGNAL")
@@ -110,14 +128,22 @@
 #'   tissue_type = "Bladder"
 #' )
 #'
-#' ## If you use an incorrect tissue_type an error is given,
-#' ## showing all possible tissue_types.
+#' ## If you use an incorrect tissue_type an error is given.
 #'
 #' ## Get sparse signatures
 #' get_known_signatures(source = "SPARSE")
-get_known_signatures <- function(muttype = c("snv", "dbs", "indel", "tsb_snv"),
-                                 source = c("COSMIC", "SIGNAL", "SPARSE"),
-                                 sig_type = c("reference", "exposure", "tissue"),
+get_known_signatures <- function(muttype = c("snv", 
+                                             "dbs", 
+                                             "indel", 
+                                             "tsb_snv"),
+                                 source = c("COSMIC", 
+                                            "SIGNAL", 
+                                            "SPARSE", 
+                                            "COSMIC_v3.1", 
+                                            "COSMIC_v3.2"),
+                                 sig_type = c("reference", 
+                                              "exposure", 
+                                              "tissue"),
                                  incl_poss_artifacts = FALSE,
                                  tissue_type = c(
                                    NA, "Biliary", "Bladder", "Bone",
@@ -127,22 +153,59 @@ get_known_signatures <- function(muttype = c("snv", "dbs", "indel", "tsb_snv"),
                                    "Lymphoid", "Myeloid", "Ovary",
                                    "Pancreas", "Prostate", "Skin",
                                    "Stomach", "Thyroid", "Uterus"
-                                 )) {
+                                 ),
+                                 genome = c("GRCh37", "GRCh38", "mm10")) {
 
   # Validate arguments
   muttype <- match.arg(muttype)
   source <- match.arg(source)
   sig_type <- match.arg(sig_type)
   tissue_type <- match.arg(tissue_type)
+  genome <- match.arg(genome)
 
+  # Use the newest COSMIC version as the default
+  if (source == "COSMIC"){
+    source = "COSMIC_v3.2"
+  }
+  
+  # Provide a message that the old COSMIC version will not be supported in the future.
+  if (source == "COSMIC_v3.1"){
+    message(paste0("You are currently attempting to use an older COSMIC version. ",
+            "This version will likely be removed in future releases. ",
+            "Consider switching to a newer version or manually saving the matrix you are using now."))
+  }
+  
+  # Check that a correct combination of arguments is used.
   if (!.is_na(tissue_type) & sig_type != "tissue") {
-    stop("tissue_type can only be used with `sig_type == 'tissue'`",
+    stop("tissue_type can only be used with `sig_type = 'tissue'`",
       call. = FALSE
     )
   }
+  
+  if (source != "COSMIC_v3.2" & (genome == "GRCh38" | genome == "mm10")){
+    stop("genome can only be used with `source = 'COSMIC' or `source = 'COSMIC_v3.2'",
+         call. = FALSE)
+  }
+  
+  if ((genome == "GRCh38" | genome == "mm10") & (muttype == "indel" | muttype == "tsb_snv")){
+    stop(paste0("There are no COSMIC indel or tsb_snv signatures that are ",
+                "normalized for GRCh38 or mm10.\n",
+                "Use the GRCh37 signatures instead."),
+         call. = FALSE)
+  }
 
+  # Use the older COSMIC version for tsb_snv, 
+  # because there is no 3.2 version for this signature type.
+  if (source == "COSMIC_v3.2" & muttype == "tsb_snv"){
+    source = "COSMIC_v3.1"
+  }
+  
   # Determine signature file name
   basename_sig <- paste0(muttype, "_", source, "_", sig_type, ".txt")
+  if (source == "COSMIC_v3.2"){
+    basename_sig <- paste0(muttype, "_", source, "_", sig_type, "_", genome, ".txt")
+  }
+  #basename_sig <- stringr::str_remove(basename_sig, "_v3.1|_v3.2")
   fname_sig <- file.path("extdata", "signatures", basename_sig)
   fname_sig <- system.file(fname_sig, package = "MutationalPatterns")
 
@@ -181,7 +244,7 @@ get_known_signatures <- function(muttype = c("snv", "dbs", "indel", "tsb_snv"),
       signatures <- signatures[, good_cols, drop = FALSE]
     }
 
-    if (source == "COSMIC" & muttype == "snv") {
+    if ((source == "COSMIC_v3.2" | source == "COSMIC_v3.1") & muttype == "snv") {
       bad_sigs <- paste0("SBS", c(27, 43, seq(45, 60)))
       good_cols <- !colnames(signatures) %in% bad_sigs
       signatures <- signatures[, good_cols, drop = FALSE]

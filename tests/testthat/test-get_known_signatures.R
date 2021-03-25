@@ -7,6 +7,9 @@ output <- get_known_signatures()
 # including potential artifacts.
 output_artifact <- get_known_signatures(incl_poss_artifacts = TRUE)
 
+# Get a GRCh38 version of the signatures
+output_grch38 = get_known_signatures(genome = "GRCh38")
+
 # Get dbs signatures
 output_dbs <- get_known_signatures("dbs")
 
@@ -15,6 +18,9 @@ output_indel <- get_known_signatures("indel")
 
 # Get transcription strand bias snv signatures
 output_tsb <- get_known_signatures("tsb_snv")
+
+# Get a GRCh38 version of the signatures
+output_v3_1 = get_known_signatures(source = "COSMIC_v3.1")
 
 # Get reference signatures from SIGNAL
 output_signal <- get_known_signatures(source = "SIGNAL")
@@ -48,9 +54,11 @@ output_sparse <- get_known_signatures(source = "SPARSE")
 test_that("Output has correct class", {
   expect_true(inherits(output, "matrix"))
   expect_true(inherits(output_artifact, "matrix"))
+  expect_true(inherits(output_grch38, "matrix"))
   expect_true(inherits(output_dbs, "matrix"))
   expect_true(inherits(output_indel, "matrix"))
   expect_true(inherits(output_tsb, "matrix"))
+  expect_true(inherits(output_v3_1, "matrix"))
   expect_true(inherits(output_signal, "matrix"))
   expect_true(inherits(output_signal_arti, "matrix"))
   expect_true(inherits(output_exposure, "matrix"))
@@ -61,11 +69,13 @@ test_that("Output has correct class", {
 })
 
 test_that("Output has correct dimensions", {
-  expect_equal(dim(output), c(96, 54))
-  expect_equal(dim(output_artifact), c(96, 72))
+  expect_equal(dim(output), c(96, 60))
+  expect_equal(dim(output_artifact), c(96, 78))
+  expect_equal(dim(output_grch38), c(96, 60))
   expect_equal(dim(output_dbs), c(78, 11))
   expect_equal(dim(output_indel), c(83, 18))
   expect_equal(dim(output_tsb), c(192, 65))
+  expect_equal(dim(output_v3_1), c(96, 54))
   expect_equal(dim(output_signal), c(96, 29))
   expect_equal(dim(output_signal_arti), c(96, 41))
   expect_equal(dim(output_exposure), c(96, 54))
@@ -81,7 +91,7 @@ test_that("An error is thrown when tissue_type is used outside tissue mode.", {
     {
       get_known_signatures(tissue_type = "Bladder")
     },
-    "tissue_type can only be used with `sig_type == 'tissue'`"
+    "tissue_type can only be used with `sig_type = 'tissue'`"
   )
 })
 
