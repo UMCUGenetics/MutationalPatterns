@@ -769,6 +769,28 @@ plot_contribution(fit_res_strict$contribution,
 )
 ```
 
+By default `fit_to_signatures_strict` uses the "backwards" selection approach
+described above. However, it is also possible to use a "best subset" approach.
+The benefit of this method is that it can be more accurate than the "backwards"
+approach. However, it becomes computationally infeasible when using many
+signatures. Therefore it should only be used on small signature sets (max 10-15
+signatures), like tissue specific signatures. 
+The "best subset" approach works similarly to the "backwards" approach. This
+approach again starts with a standard refit. The refitting is then repeated for
+each combination of n-1 signatures, where n is the total number of signatures.
+In other words, if you started with 10 signatures, the refitting is repeated 10
+times, with a different signature being removed each time. The combination of
+signatures that has the best cosine similarity between the original and
+reconstructed profile is chosen. This is done in an iterative fashion for n-2,
+n-3, ect. You stop removing signatures when the difference between two
+iterations becomes bigger than a certain cutoff, just like with the backwards
+method.
+
+We randomly selected a few signatures for this example, to keep the runtime low.
+In practice, signatures should be selected based on prior knowledge.
+```{r fit_to_signatures_strict_best_subset}
+best_subset_refit <- fit_to_signatures_strict(mut_mat, signatures[,1:5], max_delta = 0.002, method = "best_subset")
+```
 
 A third method that can reduce overfitting and the misattribution of signatures
 is to merge similar signatures. This works by merging signatures whose cosine
