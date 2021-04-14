@@ -17,6 +17,9 @@ test_that("Output has correct class", {
 
   output_ori_10 <- fit_to_signatures_bootstrapped(mut_mat, signatures, n_boots = 2, max_delta = 0.05, method = "regular_10+")
   expect_true(inherits(output_ori_10, "matrix"))
+  
+  output_best <- fit_to_signatures_bootstrapped(mut_mat, signatures[,1:5], n_boots = 2, max_delta = 0.05, method = "strict_best_subset")
+  expect_true(inherits(output_best, "matrix"))
 })
 
 expected <- readRDS(system.file("states/bootstrapped_snv_refit.rds",

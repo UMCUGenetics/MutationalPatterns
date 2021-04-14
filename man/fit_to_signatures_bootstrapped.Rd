@@ -9,7 +9,8 @@ fit_to_signatures_bootstrapped(
   signatures,
   n_boots = 1000,
   max_delta = 0.004,
-  method = c("strict", "regular", "regular_10+"),
+  method = c("strict", "regular", "regular_10+", "strict_best_subset",
+    "strict_backwards"),
   verbose = TRUE
 )
 }
@@ -27,9 +28,12 @@ Only used with method strict.}
 
 \item{method}{The refitting method to be used.
  Possible values:
-* 'strict' Uses fit_to_signatures_strict;
+* 'strict' Uses fit_to_signatures_strict with the default (backwards selection) method;
 * 'regular' Uses fit_to_signatures;
-* 'regular_10+' Uses fit_to_signatures, but removes signatures with less than 10 variants.;}
+* 'regular_10+' Uses fit_to_signatures, but removes signatures with less than 10 variants.;
+* 'strict_best_subset' Uses fit_to_signatures_strict with the 'best_subset' method;
+* 'strict_backwards' Uses fit_to_signatures_strict with the backwards selection method.
+This is the same as the 'strict' method;}
 
 \item{verbose}{Boolean. If TRUE, the function will show how far along it is.}
 }

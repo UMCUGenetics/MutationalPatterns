@@ -29,9 +29,12 @@
 #' Only used with method strict.
 #' @param method The refitting method to be used.
 #'               Possible values:
-#'              * 'strict' Uses fit_to_signatures_strict;
+#'              * 'strict' Uses fit_to_signatures_strict with the default (backwards selection) method;
 #'              * 'regular' Uses fit_to_signatures;
 #'              * 'regular_10+' Uses fit_to_signatures, but removes signatures with less than 10 variants.;
+#'              * 'strict_best_subset' Uses fit_to_signatures_strict with the 'best_subset' method;
+#'              * 'strict_backwards' Uses fit_to_signatures_strict with the backwards selection method.
+#'              This is the same as the 'strict' method;
 #' @param verbose Boolean. If TRUE, the function will show how far along it is.
 #'
 #' @return A matrix showing the signature contributions across all the bootstrap iterations.
@@ -70,7 +73,7 @@ fit_to_signatures_bootstrapped <- function(mut_matrix,
                                            signatures,
                                            n_boots = 1000,
                                            max_delta = 0.004,
-                                           method = c("strict", "regular", "regular_10+"),
+                                           method = c("strict", "regular", "regular_10+", "strict_best_subset", "strict_backwards"),
                                            verbose = TRUE) {
 
   # These variables use non standard evaluation.
@@ -96,7 +99,7 @@ fit_to_signatures_bootstrapped <- function(mut_matrix,
     mut_mat_resampled <- .resample_mut_mat(mut_matrix)
 
     # Perform refit method
-    if (method == "strict") {
+    if (method == "strict" | method == "strict_backwards") {
       refit_out <- fit_to_signatures_strict(mut_mat_resampled, signatures, max_delta = max_delta)
       contri <- refit_out$fit_res$contribution
     }
@@ -108,6 +111,10 @@ fit_to_signatures_bootstrapped <- function(mut_matrix,
       fit_res <- fit_to_signatures(mut_mat_resampled, signatures)
       index <- rowSums(fit_res$contribution >= 10) != 0 # Check whether a signature has at least 10 mutations in a single sample
       contri <- fit_res$contribution[index, ]
+    }
+    else if (method == "strict_best_subset"){
+      refit_out <- fit_to_signatures_strict(mut_mat_resampled, signatures, max_delta = max_delta, method = "best_subset")
+      contri <- refit_out$fit_res$contribution
     }
 
     # Reformat contribution
