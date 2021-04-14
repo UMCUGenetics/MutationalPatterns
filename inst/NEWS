@@ -1,3 +1,12 @@
+MutationalPatterns v3.1.7
+
+Changes:
+* fit_to_signatures_strict can now use a "best subset" signature selection method 
+in addition to the "backwards" selection method. This can lead to more accurate results,
+but is computationally infeasible when using a large signature set.
+* extract_signatures now has a "fudge" parameter, which can prevent errors 
+caused by constant columns, when using the "variational_bayes" nmf.
+
 MutationalPatterns v3.1.6
 
 Changes:
