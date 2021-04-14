@@ -4,19 +4,26 @@
 \alias{fit_to_signatures_strict}
 \title{Fit mutational signatures to a mutation matrix with less overfitting}
 \usage{
-fit_to_signatures_strict(mut_matrix, signatures, max_delta = 0.004)
+fit_to_signatures_strict(
+  mut_matrix,
+  signatures,
+  max_delta = 0.004,
+  method = c("backwards", "best_subset")
+)
 }
 \arguments{
-\item{mut_matrix}{mutation count matrix (dimensions: x mutation types
+\item{mut_matrix}{Mutation count matrix (dimensions: x mutation types
 X n samples)}
 
 \item{signatures}{Signature matrix (dimensions: x mutation types
 X n signatures)}
 
 \item{max_delta}{The maximum difference in original vs reconstructed cosine similarity between two iterations.}
+
+\item{method}{The method used to select signatures.}
 }
 \value{
-A list containing a fit_res object, similar to `fit_to_signatures` and a list of ggplot graphs
+A list containing a fit_res object, similar to 'fit_to_signatures' and a list of ggplot graphs
 that for each sample shows in what order the signatures were removed and how this affected the cosine similarity.
 }
 \description{
@@ -30,13 +37,28 @@ less strictly will also decrease this issue.
 }
 \details{
 Find a linear non-negative combination of mutation signatures that
-reconstructs the mutation matrix. First an optimal reconstruction is achieved via `fit_to_signatures`.
-However, this is prone to overfitting.
-To solve this the signature with the lowest contribution is removed and refitting is repeated.
-This is done in an iterative fashion.
-Each time the cosine similarity between the original and reconstructed profile is calculated.
-Iterations are stopped when the difference between two iterations becomes more than `max_delta`.
-The second-last set of signatures is then used for a final refit.
+reconstructs the mutation matrix. Signature selection (feature selection) is
+done to reduce overfitting. This can be done via either a 'backwards'
+(default) or 'best_subset' method. 
+The 'backwards' method starts by achieving an optimal reconstruction via
+'fit_to_signatures'. The signature with the lowest contribution is then
+removed and refitting is repeated. This is done in an iterative fashion. Each
+time the cosine similarity between the original and reconstructed profile is
+calculated.
+The 'best_subset' method also starts by achieving an optimal reconstruction
+via 'fit_to_signatures'. Signature refitting is then repeated for each
+combination of n-1 signatures, where n is the number of signatures in the
+signature matrix. The cosine similarity between the original and
+reconstructed profile is calculated for each combination. The combination
+with the highest cosine similarity is then chosen. This is done in an
+iterative fashion for n-2, n-3, ect.
+With both methods, iterations are stopped when the difference between two
+iterations becomes more than 'max_delta'. The second-last set of signatures
+is then used for a final refit.
+
+The 'best_subset' method can result in more accurate results than the 'backwards' method, however it becomes very slow when a large
+amount of signatures are used for refitting. We recommend only using the 'best_subset' method when fitting a maximum of 10-15 signatures.
+When using the 'best_subset' method a lower 'max_delta' should be used, as the expected differences in cosine similarity are reduced.
 }
 \examples{
 ## See the 'mut_matrix()' example for how we obtained the mutation matrix:
@@ -55,6 +77,19 @@ fit_res <- strict_refit$fit_res
 
 ## list of ggplots that shows how the cosine similarity was reduced during the iterations
 fig_l <- strict_refit$sim_decay_fig
+
+
+## Fit to signatures with the best_subset method
+## This can be more accurate than the standard backwards method, 
+## but can only be used with a limited amount of signatures.
+## Here we use only 5 signatures to reduce the runtime. 
+## In practice up to 10-15 signatures could be used.
+best_subset_refit <- fit_to_signatures_strict(mut_mat, 
+   signatures[,1:5], 
+   max_delta = 0.002, 
+   method = "best_subset"
+)
+
 }
 \seealso{
 \code{\link{mut_matrix}},
