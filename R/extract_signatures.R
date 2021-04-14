@@ -18,6 +18,12 @@
 #' @param single_core Boolean. If TRUE, it forces the NMF algorithm to
 #' use only a single core. This can sometimes prevent issues.
 #' Doesn't apply to variational-bayes NMF
+#' @param fudge Small positive number that is used for the variational_bayes NMF.
+#' Setting this to a small value like 0.0001 can prevent errors from occurring,
+#' when extracting many signatures at once. In general, we recommend extracting
+#' less signatures when errors occur, but this parameter can be used when that
+#' is not an option.
+#' Default = NULL.
 #'
 #' @return Named list of mutation matrix, signatures and signature contribution
 #'
@@ -40,7 +46,12 @@
 #'
 #' @export
 
-extract_signatures <- function(mut_matrix, rank, nrun = 200, nmf_type = c("regular", "variational_bayes"), single_core = FALSE) {
+extract_signatures <- function(mut_matrix, 
+                               rank, 
+                               nrun = 200, 
+                               nmf_type = c("regular", "variational_bayes"), 
+                               single_core = FALSE, 
+                               fudge = NULL) {
   # Match argument
   nmf_type <- match.arg(nmf_type)
 
@@ -77,7 +88,7 @@ extract_signatures <- function(mut_matrix, rank, nrun = 200, nmf_type = c("regul
       ), call. = FALSE)
     }
     sc <- ccfindR::scNMFSet(count = mut_matrix)
-    res <- ccfindR::vb_factorize(sc, ranks = rank, nrun = nrun, progress.bar = FALSE, verbose = 0)
+    res <- ccfindR::vb_factorize(sc, ranks = rank, nrun = nrun, progress.bar = FALSE, verbose = 0, fudge = fudge)
     # estimate = ccfindR::vb_factorize(sc, ranks = 2:7, nrun = nrun, progress.bar = FALSE, verbose = 0)
     # plot(estimate)
     # optimal_rank(sb)

@@ -9,7 +9,8 @@ extract_signatures(
   rank,
   nrun = 200,
   nmf_type = c("regular", "variational_bayes"),
-  single_core = FALSE
+  single_core = FALSE,
+  fudge = NULL
 )
 }
 \arguments{
@@ -32,6 +33,13 @@ mathematically optimal number of signatures.}
 \item{single_core}{Boolean. If TRUE, it forces the NMF algorithm to
 use only a single core. This can sometimes prevent issues.
 Doesn't apply to variational-bayes NMF}
+
+\item{fudge}{Small positive number that is used for the variational_bayes NMF.
+Setting this to a small value like 0.0001 can prevent errors from occurring,
+when extracting many signatures at once. In general, we recommend extracting
+less signatures when errors occur, but this parameter can be used when that
+is not an option.
+Default = NULL.}
 }
 \value{
 Named list of mutation matrix, signatures and signature contribution
