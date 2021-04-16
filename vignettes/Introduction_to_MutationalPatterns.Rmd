@@ -673,13 +673,13 @@ signature analyses of small cohorts or individual samples, but also to relate
 own findings to known signatures and published findings. The
 `fit_to_signatures` function finds the optimal linear combination of mutational
 signatures that most closely reconstructs the mutation matrix by solving a
-non-negative least-squares constraints problem.
+non-negative least-squares constraints problem. It can work with a SNV, indel,
+DBS or other type of count matrix.
 
 Fit mutation matrix to the COSMIC mutational signatures:
 ```{r fit_to_signatures}
 fit_res <- fit_to_signatures(mut_mat, signatures)
 ```
-
 
 The `fit_res` object can be visualized similarly to the `nmf_res` object. The
 functions `plot_contribution`, `plot_contribution_heatmap`,
