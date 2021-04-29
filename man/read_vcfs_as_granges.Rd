@@ -34,7 +34,7 @@ of this group will be removed.  Possible values:
 
 \item{type}{The mutation type that will be loaded. All other variants will be filtered out.
           Possible values:
-          * 'snv'
+          * 'snv' (default)
           * 'indel'
           * 'dbs'
           * 'mbs'
@@ -58,6 +58,7 @@ This function reads Variant Call Format (VCF) files into a GRanges object
 and combines them in a GRangesList.  In addition to loading the files, this
 function applies the same seqlevel style to the GRanges objects as the
 reference genome passed in the 'genome' parameter.
+By default only reads in snv variants.
 }
 \examples{
 ## The example data set consists of three colon samples, three intestine

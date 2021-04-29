@@ -4,6 +4,7 @@
 #' and combines them in a GRangesList.  In addition to loading the files, this
 #' function applies the same seqlevel style to the GRanges objects as the
 #' reference genome passed in the 'genome' parameter.
+#' By default only reads in snv variants.
 #'
 #' @param vcf_files Character vector of VCF file names
 #' @param sample_names Character vector of sample names
@@ -20,7 +21,7 @@
 #'                seqlevels from the VCF file.
 #' @param type The mutation type that will be loaded. All other variants will be filtered out.
 #'              Possible values:
-#'              * 'snv'
+#'              * 'snv' (default)
 #'              * 'indel'
 #'              * 'dbs'
 #'              * 'mbs'
