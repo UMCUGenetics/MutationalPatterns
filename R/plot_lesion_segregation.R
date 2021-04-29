@@ -110,6 +110,8 @@ plot_lesion_segregation <- function(vcf,
     tb <- tb %>%
       dplyr::filter(seqnames %in% chromosomes) %>%
       dplyr::mutate(seqnames = factor(seqnames, levels = chromosomes))
+  } else{
+    tb$seqnames <- factor(tb$seqnames, levels = GenomeInfoDb::seqlevelsInUse(vcf_list))
   }
   
   # Create limit to ensure that the entire chromosomes are plotted, 
