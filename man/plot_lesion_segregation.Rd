@@ -9,7 +9,8 @@ plot_lesion_segregation(
   per_chrom = FALSE,
   sample_name = NA,
   min_muts_mean = 10,
-  chromosomes = NA
+  chromosomes = NA,
+  subsample = NA
 )
 }
 \arguments{
@@ -24,6 +25,10 @@ Not very useful if you have more than one sample.}
 of a chromosome to be calculated.}
 
 \item{chromosomes}{Character vector. Determines chromosomes to be used and their order.}
+
+\item{subsample}{Double between 0 and 1. Subsamples the amount of mutations to create
+a plot with less dots. Such a plot is easier to modify in a vector program like illustrator.
+(default: NA)}
 }
 \value{
 ggplot2 object
@@ -63,6 +68,9 @@ figure_l = plot_lesion_segregation(gr, per_chrom = TRUE, sample_name = "Colon1")
 
 ## Plot specific chromosomes in a user specified order
 plot_lesion_segregation(grl[1:3], chromosomes = c(2,3))
+
+## Subsample the mutations, so less points are plotted.
+plot_lesion_segregation(grl[1:3], subsample = 0.2)
 
 }
 \seealso{

@@ -19,6 +19,7 @@ output_noname <- plot_lesion_segregation(gr)
 output_l <- plot_lesion_segregation(gr, per_chrom = TRUE, sample_name = "Colon1")
 output_chr_filter = plot_lesion_segregation(grl, chromosomes = c("chr2", "chr3"))
 output_chr_filter2 = plot_lesion_segregation(grl, chromosomes = c("2", "3"))
+output_subsample <- plot_lesion_segregation(grl, subsample = 0.1)
 
 test_that("Output has correct class", {
   expect_true(inherits(output, c("gg")))
@@ -28,6 +29,7 @@ test_that("Output has correct class", {
   expect_true(inherits(output_l[[1]], c("gg")))
   expect_true(inherits(output_chr_filter, c("gg")))
   expect_true(inherits(output_chr_filter2, c("gg")))
+  expect_true(inherits(output_subsample, c("gg")))
 })
 
 test_that("Output per chromosome has correct length", {

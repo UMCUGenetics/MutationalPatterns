@@ -17,6 +17,9 @@
 #' @param min_muts_mean Integer. The minimum of mutations, required for the mean strand 
 #' of a chromosome to be calculated.
 #' @param chromosomes Character vector. Determines chromosomes to be used and their order.
+#' @param subsample Double between 0 and 1. Subsamples the amount of mutations to create
+#' a plot with less dots. Such a plot is easier to modify in a vector program like illustrator.
+#' (default: NA)
 #'
 #' @return ggplot2 object
 #' @export
@@ -48,11 +51,15 @@
 #' ## Plot specific chromosomes in a user specified order
 #' plot_lesion_segregation(grl[1:3], chromosomes = c(2,3))
 #' 
+#' ## Subsample the mutations, so less points are plotted.
+#' plot_lesion_segregation(grl[1:3], subsample = 0.2)
+#' 
 plot_lesion_segregation <- function(vcf, 
                                     per_chrom = FALSE, 
                                     sample_name = NA, 
                                     min_muts_mean = 10,
-                                    chromosomes = NA) {
+                                    chromosomes = NA,
+                                    subsample = NA) {
 
   # Argument name is vcf, because the function previously only worked on a single GRanges.
   # Because the function now also works on a GRangesList, the name vcf_list is used internally.
@@ -69,6 +76,20 @@ plot_lesion_segregation <- function(vcf,
   # Genome is set to NULL to ensure seqlevels can be changed.
   GenomeInfoDb::genome(vcf_list) <- NA
   GenomeInfoDb::seqlevelsStyle(vcf_list) <- "NCBI" # This takes less space when plotting
+  
+  
+  # Subsample the amount of mutations if necessary
+  if (!is.na(subsample)){
+    if (inherits(vcf_list, "CompressedGRangesList")){
+      vcf_list <- purrr::map(as.list(vcf_list), .subsample_granges, subsample) %>% 
+        GenomicRanges::GRangesList()
+    } else if (inherits(vcf_list, "GRanges")) {
+      vcf_list <- .subsample_granges(vcf_list, subsample)
+    } else {
+      .not_gr_or_grl(vcf_list)
+    }
+  }
+
   
   # get strandedness
   if (inherits(vcf_list, "CompressedGRangesList")){
@@ -111,7 +132,11 @@ plot_lesion_segregation <- function(vcf,
       dplyr::filter(seqnames %in% chromosomes) %>%
       dplyr::mutate(seqnames = factor(seqnames, levels = chromosomes))
   } else{
-    tb$seqnames <- factor(tb$seqnames, levels = GenomeInfoDb::seqlevelsInUse(vcf_list))
+    chromosomes <- GenomeInfoDb::seqlevelsInUse(vcf_list)
+    if (!length(chromosomes)){
+      chromosomes <- GenomeInfoDb::seqlevels(vcf_list)
+    }
+    tb$seqnames <- factor(tb$seqnames, levels = chromosomes)
   }
   
   # Create limit to ensure that the entire chromosomes are plotted, 
@@ -170,6 +195,22 @@ plot_lesion_segregation <- function(vcf,
   }
 }
 
+
+#' Subsample granges to a smaller number of mutations
+#'
+#' @param vcf GRanges object
+#' @param subsample Double between 0 and 1. Subsamples the amount of mutations to create
+#' a plot with less dots. Such a plot is easier to modify in a vector program like illustrator.
+#' 
+#' @return GRanges object
+#' @noRd
+#'
+.subsample_granges = function(vcf, subsample){
+  nr_muts_kept <- ceiling(subsample * length(vcf))
+  muts_kept_i <- sample.int(length(vcf), nr_muts_kept, replace = FALSE)
+  vcf <- vcf[muts_kept_i,]
+  return(vcf)
+}
 
 #' Plot the strands of variants to show lesion segregation
 #'
