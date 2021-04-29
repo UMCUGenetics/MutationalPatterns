@@ -1,3 +1,13 @@
+MutationalPatterns v3.1.8 (Release date: 2021-04-29)
+
+Changes:
+* Added a subsample argument to plot_lesion_segregation that allows the user to subsample
+the amount of mutations. This way the plot becomes smaller and easier to modify in a vector
+program like illustrator.
+* Clarified in the documentation that read_vcfs_as_granges reads only snvs by default.
+* Fixed issue with incorrect ordering of the chromosome names in plot_lesion_segregation.
+* Reduced size of the callableloci-sample.bed example file.
+
 MutationalPatterns v3.1.7
 
 Changes:
