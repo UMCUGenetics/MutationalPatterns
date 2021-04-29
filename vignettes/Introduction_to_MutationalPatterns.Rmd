@@ -825,10 +825,11 @@ stability. In MutationalPatterns bootstrapping can be done with
 
 This function can be used with the standard and strict refitting methods
 described previously. Here we will use the "strict" method on two samples.
+(We only use 50 bootstraps here to reduce the run time and figure size.)
 ```{r fit_to_signatures_bootstrapped, message=FALSE}
 contri_boots <- fit_to_signatures_bootstrapped(mut_mat[, c(3, 7)],
   signatures,
-  n_boots = 100,
+  n_boots = 50,
   method = "strict"
 )
 ```
