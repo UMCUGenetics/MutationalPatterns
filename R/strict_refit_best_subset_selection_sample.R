@@ -63,7 +63,7 @@
 .strict_refit_best_subset_selection_sample_n = function(mut_mat_sample, signatures, n){
     
     # Determine each possible combination of n signatures
-    all_n_subsets <- combn(colnames(signatures), n, simplify = F)
+    all_n_subsets <- combn(colnames(signatures), n, simplify = FALSE)
     
     # Perform a signature refit for each combination of n signatures.
     # And calculate the cosine similarity with the reconstructed profile.
