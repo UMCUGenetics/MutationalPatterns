@@ -165,7 +165,7 @@ mut_mat <- readRDS(system.file("states/mut_mat_data.rds",
 
 # Read in Cosmic signatures 3.2
 format_COSMIC_snv_signatures = function(in_fname, genome, source, mut_mat){
-    sbs_sigs = read.table(in_fname, dec = ",", header = T) %>%
+    sbs_sigs = read.table(in_fname, dec = ",", header = TRUE) %>%
         dplyr::mutate(cont = Type,
                       Type = str_replace(cont, ".*\\[(.*)\\].*", "\\1"),
                       Subtype = str_remove(str_remove(cont, ">.*\\]"), "\\[")) %>% 
@@ -182,7 +182,7 @@ format_COSMIC_snv_signatures = function(in_fname, genome, source, mut_mat){
                        "_reference_",
                        genome,
                        ".txt"),
-                quote = F, row.names = F, sep = "\t")
+                quote = FALSE, row.names = FALSE, sep = "\t")
 
 }
 
