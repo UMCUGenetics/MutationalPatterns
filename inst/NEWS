@@ -1,198 +1,239 @@
-MutationalPatterns v3.1.8 (Release date: 2021-04-29)
+MutationalPatterns v3.3.1 (Release date: 2021-06-10)
+=====================================================
 
 Changes:
-* Added a subsample argument to plot_lesion_segregation that allows the user to subsample
-the amount of mutations. This way the plot becomes smaller and easier to modify in a vector
-program like illustrator.
-* Clarified in the documentation that read_vcfs_as_granges reads only snvs by default.
-* Fixed issue with incorrect ordering of the chromosome names in plot_lesion_segregation.
-* Reduced size of the callableloci-sample.bed example file.
+
+* Bugfixes:
+  + Fixed format of the NEWS file.
+  
+* Other
+  + The author info has been updated.
+  + Version number bumped for development version of Bioconductor 3.14.
+
+
+MutationalPatterns v3.1.8 (Release date: 2021-04-29)
+=====================================================
+
+Changes:
+
+* Improvements:
+  + Added a subsample argument to plot_lesion_segregation that allows the user to subsample
+    the amount of mutations. This way the plot becomes smaller and easier to modify in a vector
+    program like illustrator.
+  + Clarified in the documentation that read_vcfs_as_granges reads only SNVs by default.
+  + Reduced size of the callableloci-sample.bed example file.
+
+* Bugfixes:
+  + Fixed issue with incorrect ordering of the chromosome names in plot_lesion_segregation.
 
 MutationalPatterns v3.1.7
+=====================================================
 
 Changes:
-* fit_to_signatures_strict can now use a "best subset" signature selection method 
-in addition to the "backwards" selection method. This can lead to more accurate results,
-but is computationally infeasible when using a large signature set.
-* extract_signatures now has a "fudge" parameter, which can prevent errors 
-caused by constant columns, when using the "variational_bayes" nmf.
+
+* New features:
+  + fit_to_signatures_strict can now use a "best subset" signature selection method 
+    in addition to the "backwards" selection method. This can lead to more accurate results,
+    but is computationally infeasible when using a large signature set.
+    
+* Improvements:
+  + extract_signatures now has a "fudge" parameter, which can prevent errors 
+    caused by constant columns, when using the "variational_bayes" nmf.
 
 MutationalPatterns v3.1.6
+=====================================================
 
 Changes:
-* Version 3.2 of the COSMIC mutational signatures have been included.
-Both the GRCh37 (default), GRCh38 and mm10 version of these signatures can be used.
-Version 3.1 of the COSMIC signatures is also still supported for now.
-* The size of the example vcfs of the colon, intestine and liver
-has been reduced. This was done by removing parts of the file that were discarded
-by read_vcfs_as_granges. The GRanges object that is created after reading in one
-of these vcfs hasn't changed.
+
+* Improvements:
+  + Version 3.2 of the COSMIC mutational signatures have been included.
+    Both the GRCh37 (default), GRCh38 and mm10 version of these signatures can be used.
+    Version 3.1 of the COSMIC signatures is also still supported for now.
+  + The size of the example vcfs of the colon, intestine and liver
+    has been reduced. This was done by removing parts of the file that were discarded
+    by read_vcfs_as_granges. The GRanges object that is created after reading in one
+    of these vcfs hasn't changed.
 
 MutationalPatterns v3.1.5
+=====================================================
 
 Changes:
-* Reduced the runtime of several long examples and unit-tests.
+
+* Improvements:
+  + Reduced the runtime of several long examples and unit-tests.
 
 MutationalPatterns v3.1.4
+=====================================================
 
 Changes:
-* Plot lesion segregation now has background strips.
-* Plot_rainfall can now remove more chromosome prefixes from the labels. 
-chromosome(_), group(_) and chrom can now be removed in addition to chr. All are case insensitive.
-* Improved the description in the vignette of choosing the cut-off for strict refitting.
-* Fixed spelling mistakes.
+
+* Improvements:
+  + Plot lesion segregation now has background strips.
+  + Plot_rainfall can now remove more chromosome prefixes from the labels. 
+  chromosome(_), group(_) and chrom can now be removed in addition to chr. All are case insensitive.
+  + Improved the description in the vignette of choosing the cut-off for strict refitting.
+  + Fixed spelling mistakes.
 
 MutationalPatterns v3.1.3
+=====================================================
 
 Changes:
-Plot_lesion_segregation has been improved. It can now plot multiple samples at the same time.
-Users can also specify which chromosomes they want to plot. The plot now also contains colour and
-the ratio of the mutations on the chromosomal strands is 
-visualised by a horizontal line per chromosome.
+
+* Improvements:
+  + Plot_lesion_segregation has been improved. It can now plot multiple samples at the same time.
+    Users can also specify which chromosomes they want to plot. The plot now also contains colour and
+    the ratio of the mutations on the chromosomal strands is 
+    visualised by a horizontal line per chromosome.
 
 MutationalPatterns v3.1.2
+=====================================================
 
 Changes:
-* The plot_correlation_bootstrap output now shows less dominant colours for the
-absent signatures.
-* The rename_nmf_signatures function now adds the "-like" suffix to renamed signatures,
-by default.
-* The plot_river function now shows the number of mutations per sample.
-* The read_vcfs_as_granges function now has a "predefined_dbs_mbs" argument, for when
-dbs and mbs variants are already defined in the vcfs. This prevents merging of snvs.
-* The get_indel_context function now looks for repeats both to the left and to the right of the
-indel. Previously it only looked to the right of the indel.
+
+* Improvements:
+  + The plot_correlation_bootstrap output now shows less dominant colours for the
+    absent signatures.
+  + The rename_nmf_signatures function now adds the "-like" suffix to renamed signatures,
+    by default.
+  + The plot_river function now shows the number of mutations per sample.
+  + The read_vcfs_as_granges function now has a "predefined_dbs_mbs" argument, for when
+    dbs and mbs variants are already defined in the vcfs. This prevents merging of snvs.
+  + The get_indel_context function now looks for repeats both to the left and to the right of the
+    indel. Previously it only looked to the right of the indel.
 
 
 MutationalPatterns v2.99.7 (Release date: 2020-10-28)
+=====================================================
 
 Changes:
 
-* Bugfix
+* Bugfixes:
   + The last five COSMIC SNV signatures contained incorrect context orders. This has now been fixed
-  by using the latest COSMIC version (3.1.1). These also contain more digits after the decimal.
+    by using the latest COSMIC version (3.1.1). These also contain more digits after the decimal.
 
 
 MutationalPatterns v2.99.5 (Release date: 2020-10-19)
+=====================================================
 
 Changes:
 
-* Bugfix
+* Bugfixes:
   + The plot_river function had an issue with factors on R 4.0.0.
-  This is now resolved.
+    This is now resolved.
 
 MutationalPatterns v2.99.4 (Release date: 2020-10-14)
+=====================================================
 
 Changes:
 
-* New features
+* New features:
   + Added support for Indel variants. Mutation matrixes and profile plots can be
-  generated for these variants. Signature extraction and refitting is also possible.
+    generated for these variants. Signature extraction and refitting is also possible.
   + Added support for DBS variants. Mutation matrixes and profile plots can be
-  generated for these variants. Signature extraction and refitting is also possible.
+    generated for these variants. Signature extraction and refitting is also possible.
   + Added support for MBS variants. Mutation matrixes and profile plots can be
-  generated for these variants. Signature extraction and refitting is also possible.
+    generated for these variants. Signature extraction and refitting is also possible.
   + The SNV profiles are now cleaner, because the DBS and MBS support means they are
-  no longer classified as SNVs.
+    no longer classified as SNVs.
   + Added the get_mut_type function, which allows users to filter for a 
-  mutation type of interest. A shortcut to do this directly via 
-  read_vcfs_as_granges is also supported.
+    mutation type of interest. A shortcut to do this directly via 
+    read_vcfs_as_granges is also supported.
   + The mut_matrix, mut_matrix_stranded, mut_context and type_context functions now 
-  support a wider mutational context.
+    support a wider mutational context.
   + Mutational SNV profiles can be visualized as a heatmap with the plot_profile_heatmap 
-  function. This supports profiles that have a wider context.
+    function. This supports profiles that have a wider context.
   + Mutational SNV profiles can be visualized as a riverplot with the plot_river
-  function. This supports profiles that have a wider context.
+    function. This supports profiles that have a wider context.
   + Added the fit_to_signatures_strict function. This function allows for more
-  stringent signature refitting, which doesn't suffer from overfitting.
+    stringent signature refitting, which doesn't suffer from overfitting.
   + Added support for bootstrapped signature refitting. The 
-  fit_to_signatures_bootstrapped function can be used to determine the confidence 
-  of signature refits. The plot_bootstrapped_contribution function can be used to
-  plot the results as a dotplot, jitter plot or bar graph.
+    fit_to_signatures_bootstrapped function can be used to determine the confidence 
+    of signature refits. The plot_bootstrapped_contribution function can be used to
+    plot the results as a dotplot, jitter plot or bar graph.
   + Added support for region specific analyses. Mutations can now be split based
-  on user defined regions with the split_muts_region function. This way regions can
-  be treated as separate samples. Instead of treating regions as samples, they can
-  also be treated as mutation features with the lengthen_mut_matrix function. These two
-  new functions together with existing functions allow for the extraction of signatures 
-  that are region specific or that have different mutation contexts in different regions. 
-  Graphs to compare the spectra and profiles between different regions can be made,
-  using the plot_spectrum_region and plot_profile_region functions.
+    on user defined regions with the split_muts_region function. This way regions can
+    be treated as separate samples. Instead of treating regions as samples, they can
+    also be treated as mutation features with the lengthen_mut_matrix function. These two
+    new functions together with existing functions allow for the extraction of signatures 
+    that are region specific or that have different mutation contexts in different regions. 
+    Graphs to compare the spectra and profiles between different regions can be made,
+    using the plot_spectrum_region and plot_profile_region functions.
   + Added support for lesion segregation analyses. The presence of lesion segregation 
-  can be calculated in multiple ways using the calculate_lesion_segregation function.
-  Lesion segregation can also be visualized with the plot_lesion_segregation function.
+    can be calculated in multiple ways using the calculate_lesion_segregation function.
+    Lesion segregation can also be visualized with the plot_lesion_segregation function.
   + mut_matrix and mut_matrix_stranded are now vectorized, which improves
-  their runtime.
+    their runtime.
   + The potential damage that a signature can do, can be determined by looking at the number of 
-  "stop gain", "mismatch", "synonymous" or "splice site" mutations it could cause in a user 
-  supplied set of genes. This is first done per mutational context with the 
-  context_potential_damage_analysis function. Its output can then be used with the 
-  signature_potential_damage_analysis function.
+    "stop gain", "mismatch", "synonymous" or "splice site" mutations it could cause in a user 
+    supplied set of genes. This is first done per mutational context with the 
+    context_potential_damage_analysis function. Its output can then be used with the 
+    signature_potential_damage_analysis function.
   + The COSMIC signatures have been updated to version 3.1 (Alexandrov, L.B. et al., 2020, Nature).
-  Additionally, we added the SIGNAL and Sparse signatures 
-  (Andrea Degasperi et al., 2020, Nature Cancer; Daniele Ramazzotti et al., 2019, Bioarchive).
-  Signatures can now be easily retrieved with the get_known_signatures function.
+    Additionally, we added the SIGNAL and Sparse signatures 
+    (Andrea Degasperi et al., 2020, Nature Cancer; Daniele Ramazzotti et al., 2019, Bioarchive).
+    Signatures can now be easily retrieved with the get_known_signatures function.
   + The plot_spectrum function can now plot individual samples as points.
   + The plot_spectrum function can now use a 95% confidence interval (default), 
-  standard deviation or standard error of the mean for its error bars. Previously,
-  only the standard deviation was supported.
+    standard deviation or standard error of the mean for its error bars. Previously,
+    only the standard deviation was supported.
   + Unit tests have been made for all functions, resulting in a test coverage of
-  more than 90%.
+    more than 90%.
   + The extract_signatures function now supports a variational bayes NMF algorithm
-  from the ccfindR package.
+    from the ccfindR package.
   + The enrichment_depletion_test and strand_bias_test functions now calculate a
-  fdr value in addition to a p-value.
+    fdr value in addition to a p-value.
   + The cutoff p-value or fdr-value for the enrichment_depletion_test and 
-  strand_bias_test functions can now be supplied by the user. Multiple cutoff values
-  can be used, which will result in multiple significance stars.
+    strand_bias_test functions can now be supplied by the user. Multiple cutoff values
+    can be used, which will result in multiple significance stars.
   + Extracted signatures can now be renamed based on already existing signatures,
-  using the rename_nmf_signatures function.
+    using the rename_nmf_signatures function.
   + The cosine similarity between reconstructed profiles and the original can be
-  plotted with the plot_original_vs_reconstructed function.
+    plotted with the plot_original_vs_reconstructed function.
   + Signatures that are very similar can be merged with the merge_signatures function.
   + Tissue specific signature contributions can be converted to reference signatures
-  using the convert_sigs_to_ref function.
+    using the convert_sigs_to_ref function.
   + Regions with different mutation densities can be determined using the 
-  bin_mutation_density function. This can be useful for region specific analyses.
+    bin_mutation_density function. This can be useful for region specific analyses.
   + Improved single sample support. Functions like mut_matrix and
-  mut_matrix_stranded now work on a single GRanges object, instead
-  of only on a GRangesList.
+    mut_matrix_stranded now work on a single GRanges object, instead
+    of only on a GRangesList.
   + The plot_contribution_heatmap and plot_cosine_heatmap functions can now perform
-  clustering on both their rows and their columns. A predetermined order can also be given
-  for both the rows and the columns.
+    clustering on both their rows and their columns. A predetermined order can also be given
+    for both the rows and the columns.
   + Multiple samples within a mutation matrix can now be pooled together using the 
-  pool_mut_mat function, to increase statistical power.
+    pool_mut_mat function, to increase statistical power.
   + Tests are performed to check whether input GRanges objects match the supplied 
-  reference genome. Clear error messages are generated when this is not the case.
+    reference genome. Clear error messages are generated when this is not the case.
   + The plot_contribution function no longer requires a signature matrix as input,
-  when working on signature refitting data.
+    when working on signature refitting data.
   + Instead of supplying the name of a BSgenome object as an argument to functions
-  that require it, users can now also directly use the object itself.
+    that require it, users can now also directly use the object itself.
   + A new vignette has been made for the new version of the package.
   + Some functions have been rewritten for clarity.
   
-* bugfixes
+* Bugfixes:
   + A bug in the mut_strand function caused incorrect results for replication strand bias 
-  analyses. This is now fixed.
+    analyses. This is now fixed.
   + The binomial_test function is now properly two-sided.
   + The plot_rainfall function now sorts its input. This prevents incorrect results
-  on unsorted input.
+    on unsorted input.
   + The mutations_from_vcf function didn't work on empty GRanges objects. This is now fixed.
   + Removed messages about using certain variables as a "grouping variable".
   + Removed warnings about using alpha as a variable.
   + The read_vcfs_as_granges function no longer throws an error, when trying to read
-  in an empty vcf file.
+    in an empty vcf file.
   + The alignment of angled x-axes on plots has been fixed. This issue was most notable
-  for the heatmaps.
+    for the heatmaps.
   + The read_vcfs_as_granges function no longer supplies a genome name to the internally
-  used readVcf function. This fixed an issue caused by updates to the seqnames dependency.
+    used readVcf function. This fixed an issue caused by updates to the seqnames dependency.
   + A clear error message is thrown in cases where the 'seqlevelsStyle' can’t be changed by 
-  read_vcfs_as_granges or when the filtering of seqlevel groups doesn’t work. 
-  It’s now possible to not change the 'seqlevelsStyle' with read_vcfs_as_granges to 
-  circumvent these errors.
+    read_vcfs_as_granges or when the filtering of seqlevel groups doesn’t work. 
+    It’s now possible to not change the 'seqlevelsStyle' with read_vcfs_as_granges to 
+    circumvent these errors.
   + The defunct functions mutation_context, mutation_types, strand_from_vcf and
-  explained_by_signatures have been removed.
+    explained_by_signatures have been removed.
   + The plot_rainfall function plots "chr1" as 1, to save space. This is now 
-  case-insesitive, so it will also work on "Chr1".
+    case-insesitive, so it will also work on "Chr1".
 
 * Other
   + The author info has been updated.
@@ -225,7 +266,7 @@ MutationalPatterns v1.4.2 (Release date: 2017-12-19)
 
 Changes:
 
-* Improvements.
+* Improvements:
   + Improve error handling with parallel functions.
 
 * Bugfixes:
