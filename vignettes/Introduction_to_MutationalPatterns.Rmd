@@ -1230,10 +1230,11 @@ differences in the mutational spectra between them.
 ## Rainfall plot
 
 A rainfall plot visualizes mutation types and intermutation distance. Rainfall
-plots can be used to visualize the distribution of mutations along the genome
-or a subset of chromosomes. The y-axis corresponds to the distance of a
-mutation with the previous mutation and is log10 transformed. Drop-downs from
-the plots indicate clusters or "hotspots" of mutations.
+plots can be used to visualize the distribution of mutations along the genome or
+a subset of chromosomes. The y-axis corresponds to the distance of a mutation
+with the previous mutation and is log10 transformed. Drop-downs from the plots
+indicate clusters or "hotspots" of mutations. Rainfall plots can be made for
+SNVs, indels, DBSs and MBSs.
 
 In this example we make a rainfall plot over the autosomal chromosomes for 1 
 sample:

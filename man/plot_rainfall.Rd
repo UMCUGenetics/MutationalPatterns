@@ -11,7 +11,8 @@ plot_rainfall(
   colors = NA,
   cex = 2.5,
   cex_text = 3,
-  ylim = 1e+08
+  ylim = 1e+08,
+  type = c("snv", "indel", "dbs", "mbs")
 )
 }
 \arguments{
@@ -29,6 +30,13 @@ genome to be plotted}
 \item{cex_text}{Text size}
 
 \item{ylim}{Maximum y value (genomic distance)}
+
+\item{type}{The mutation type of the GRanges object that will be used.
+Possible values:
+* 'snv' (default)
+* 'indel'
+* 'dbs'
+* 'mbs'}
 }
 \value{
 Rainfall plot
@@ -69,6 +77,21 @@ plot_rainfall(vcfs[[1]],
   chromosomes = chromosomes[1],
   cex = 2
 )
+
+## You can also use other variant types
+
+## Get a GRangesList or GRanges object with indel contexts.
+## See 'indel_get_context' for more info on how to do this.
+grl_indel_context <- readRDS(system.file("states/blood_grl_indel_context.rds",
+  package = "MutationalPatterns"
+))
+
+plot_rainfall(grl_indel_context[[1]],
+  title = "Indel rainfall",
+  chromosomes,
+  type = "indel"
+)
+
 }
 \seealso{
 \code{\link{read_vcfs_as_granges}}

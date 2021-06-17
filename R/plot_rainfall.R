@@ -19,6 +19,12 @@
 #' @param cex Point size
 #' @param cex_text Text size
 #' @param ylim Maximum y value (genomic distance)
+#' @param type The mutation type of the GRanges object that will be used.
+#'              Possible values:
+#'              * 'snv' (default)
+#'              * 'indel'
+#'              * 'dbs'
+#'              * 'mbs'
 #' @return Rainfall plot
 #'
 #' @import ggplot2
@@ -46,6 +52,21 @@
 #'   chromosomes = chromosomes[1],
 #'   cex = 2
 #' )
+#' 
+#' ## You can also use other variant types
+#' 
+#' ## Get a GRangesList or GRanges object with indel contexts.
+#' ## See 'indel_get_context' for more info on how to do this.
+#' grl_indel_context <- readRDS(system.file("states/blood_grl_indel_context.rds",
+#'   package = "MutationalPatterns"
+#' ))
+#' 
+#' plot_rainfall(grl_indel_context[[1]],
+#'   title = "Indel rainfall",
+#'   chromosomes,
+#'   type = "indel"
+#' )
+#' 
 #' @seealso
 #' \code{\link{read_vcfs_as_granges}}
 #'
@@ -57,21 +78,53 @@ plot_rainfall <- function(vcf,
                           colors = NA,
                           cex = 2.5,
                           cex_text = 3,
-                          ylim = 1e+08) {
+                          ylim = 1e+08,
+                          type = c("snv", "indel", "dbs", "mbs")) {
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
   location <- NULL
 
-  # If colors parameter not provided, set to default colors
-  if (.is_na(colors)) {
-    colors <- COLORS6
+  # Match argument
+  type <- match.arg(type)
+  
+  # If colors parameter not provided, set to default colors.
+  # Also retrieve mutation categories
+  if (type == "snv"){
+    mut_categories <- SUBSTITUTIONS
+    nr_guide_rows <- 1
+    color_length <- 6
+    if (.is_na(colors)) {
+      colors <- COLORS6
+    }
+  } else if (type == "indel"){
+    mut_categories <- unique(INDEL_CATEGORIES$muttype)
+    nr_guide_rows <- 4
+    color_length <- 16
+    if (.is_na(colors)) {
+      colors <- INDEL_COLORS
+    }
+  } else if (type == "dbs"){
+    mut_categories <- paste0(unique(DBS_CATEGORIES$REF), ">NN")
+    nr_guide_rows <- 2
+    color_length <- 10
+    if (.is_na(colors)) {
+      colors <- DBS_COLORS
+    }
+  } else if (type == "mbs"){
+    mut_categories <- MBS_CATEGORIES$size
+    nr_guide_rows <- 1
+    color_length <- 8
+    if (.is_na(colors)) {
+      colors <- MBS_COLORS
+    }
   }
-
+  
   # Check color vector length
-  if (length(colors) != 6) {
-    stop("colors vector length not 6")
+  if (length(colors) != color_length) {
+    stop(paste0("colors vector length not ", color_length))
   }
+  
   # get chromosome lengths of reference genome
   chr_length <- GenomeInfoDb::seqlengths(vcf)
   # Check for missing seqlengths
@@ -122,14 +175,34 @@ plot_rainfall <- function(vcf,
       return(tb)
     }
 
-    # Determine type, location and distance to previous mut.
-    type <- mut_type(chr_subset)[-1]
-    loc <- (start(chr_subset) + chr_cum[chr])[-1]
-    dist <- diff(start(chr_subset))
+    # Determine mutation context
+    if (type == "snv"){
+      context <- mut_type(chr_subset)[-1]
+    } else if (type == "indel"){
+      if (! "muttype" %in% colnames(mcols(chr_subset))){
+        stop("The muttype column is missing from your data. Make sure to add it with the `get_indel_context` function",
+             call. = FALSE)
+      }
+      context <- chr_subset$muttype
+      context <- .set_large_indels_as_5plus(context, chr_subset)[-1]
+    } else if (type == "dbs"){
+      chr_subset <- .get_dbs_context_gr(chr_subset)
+      context <- paste0(as.vector(.get_ref(chr_subset)), ">NN")[-1]
+    } else if (type == "mbs"){
+      context <- BiocGenerics::width(.get_ref(chr_subset))[-1]
+      context <- as.character(ifelse(context >= 10, "10+", context))
+    }
+      
+    # Determine location and distance to previous mutation.
+    # For the location the left position of a variant is used.
+    #loc <- ((end(chr_subset) - start(chr_subset)) / 2 + start(chr_subset) + chr_cum[chr])
+    loc <- start(chr_subset) + chr_cum[chr]
+    dist <- diff(loc)
+    loc <- loc[-1]
 
     # Combine all into a tibble.
     tb <- tibble::tibble(
-      "type" = type,
+      "type" = context,
       "location" = loc,
       "distance" = dist,
       "chromosome" = chr
@@ -138,16 +211,17 @@ plot_rainfall <- function(vcf,
   })
 
   # Combine the different chromosomes.
-  data <- do.call(rbind, tb_l)
+  data <- do.call(rbind, tb_l) %>% 
+    dplyr::mutate(type = factor(type, levels = mut_categories))
 
   # Removes colors based on missing mutation types.  This prevents colors from
   # shifting when comparing samples with low mutation counts.
-  typesin <- SUBSTITUTIONS %in% unique(data$type)
+  typesin <- mut_categories %in% unique(data$type)
   colors <- colors[typesin]
 
   # make rainfall plot
   plot <- ggplot(data, aes(x = location, y = distance)) +
-    geom_point(aes(colour = factor(type)), cex = cex) +
+    geom_point(aes(color = factor(type)), cex = cex) +
     geom_vline(xintercept = as.vector(chr_cum), linetype = "dotted") +
     annotate("text", x = m, y = ylim, label = labels, cex = cex_text) +
     scale_y_log10() +
@@ -164,7 +238,7 @@ plot_rainfall <- function(vcf,
       axis.ticks.x = element_blank(),
       axis.text.x = element_blank()
     ) +
-    guides(colour = guide_legend(nrow = 1))
+    guides(colour = guide_legend(nrow = nr_guide_rows))
 
   return(plot)
 }

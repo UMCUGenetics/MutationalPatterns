@@ -1,3 +1,15 @@
+MutationalPatterns v3.3.2 (Release date: 2021-06-17)
+=====================================================
+
+Changes:
+
+* Improvements:
+  + The plot_rainfall function now also works on indels, 
+    DBSs and MBSs instead of only on SNVs.
+    
+* Other
+  + Introduced some global variables to reduce code duplication.
+
 MutationalPatterns v3.3.1 (Release date: 2021-06-10)
 =====================================================
 
