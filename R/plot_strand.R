@@ -42,16 +42,20 @@
 #' @export
 
 plot_strand <- function(strand_bias_df, mode = c("relative", "absolute"), colors = NA) {
-  # if colors parameter not provided, set to default colors
-  if (.is_na(colors)) {
-    colors <- COLORS6
-  }
-  mode <- match.arg(mode)
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
   type <- relative_contribution <- no_mutations <- y_vals <- NULL
 
+  # Match argument
+  mode <- match.arg(mode)
+  
+  # if colors parameter not provided, set to default colors.
+  if (.is_na(colors)) {
+    colors <- COLORS6
+  }
+  
+  # Set y values based on the plotting mode.
   if (mode == "relative") {
     strand_bias_df$y_vals <- strand_bias_df$relative_contribution
     y_lab <- "Relative contribution"

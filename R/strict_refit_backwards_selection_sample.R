@@ -112,7 +112,7 @@
     # To avoid R CMD check complaints we initialize them to NULL.
     Removed_signatures <- Cosine_similarity <- NULL
     
-    # Check argument
+    # Match argument
     method = match.arg(method)
     
     # Prepare data

@@ -34,6 +34,7 @@
 plot_bootstrapped_contribution <- function(contri_boots,
                                            mode = c("absolute", "relative"),
                                            plot_type = c("jitter", "barplot", "dotplot")) {
+  # Match arguments
   mode <- match.arg(mode)
   plot_type <- match.arg(plot_type)
 

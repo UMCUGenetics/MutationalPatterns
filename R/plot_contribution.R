@@ -81,7 +81,7 @@ plot_contribution <- function(contribution,
                               coord_flip = FALSE,
                               mode = c("relative", "absolute"),
                               palette = NA) {
-  # check mode parameter
+  # Match argument
   mode <- match.arg(mode)
 
   # optional subsetting if index parameter is provided

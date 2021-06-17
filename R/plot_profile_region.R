@@ -40,8 +40,10 @@ plot_profile_region <- function(mut_matrix, mode = c("relative_sample", "relativ
   # To avoid R CMD check complaints we initialize them to NULL.
   context <- feature <- substitution <- freq <- NULL
 
+  # Match argument
   mode <- match.arg(mode)
 
+  # if colors parameter not provided, set to default colors.
   if (is.null(colors)) {
     colors <- COLORS6
   }

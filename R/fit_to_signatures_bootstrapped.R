@@ -80,6 +80,7 @@ fit_to_signatures_bootstrapped <- function(mut_matrix,
   # To avoid R CMD check complaints we initialize them to NULL.
   sigs <- . <- NULL
 
+  # Match argument
   method <- match.arg(method)
 
   # Check enough mutations are present

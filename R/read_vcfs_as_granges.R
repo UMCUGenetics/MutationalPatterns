@@ -89,7 +89,7 @@ read_vcfs_as_granges <- function(vcf_files,
                                  change_seqnames = TRUE,
                                  predefined_dbs_mbs = FALSE) {
 
-  # Match argument
+  # Match arguments
   type <- match.arg(type)
   group <- match.arg(group)
 

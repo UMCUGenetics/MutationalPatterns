@@ -84,7 +84,7 @@ fit_to_signatures_strict <- function(mut_matrix, signatures, max_delta = 0.004, 
   # To avoid R CMD check complaints we initialize them to NULL.
   rowname <- . <- NULL
   
-  # Check argument
+  # Match argument
   method <- match.arg(method)
   
   #Set colnames if absent, to prevent duplicate names later.

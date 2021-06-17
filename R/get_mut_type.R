@@ -39,6 +39,7 @@
 get_mut_type <- function(vcf_list, 
                          type = c("snv", "indel", "dbs", "mbs"), 
                          predefined_dbs_mbs = FALSE) {
+  # Match argument
   type <- match.arg(type)
 
   if (predefined_dbs_mbs == FALSE & type != "indel"){
@@ -89,6 +90,7 @@ get_mut_type <- function(vcf_list,
 .get_mut_type_gr <- function(gr, 
                              type = c("snv", "indel", "dbs", "mbs"), 
                              predefined_dbs_mbs) {
+  # Match argument
   type <- match.arg(type)
 
   # Filter out bad variants

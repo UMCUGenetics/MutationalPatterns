@@ -47,13 +47,16 @@
 #' @export
 
 plot_strand_bias <- function(strand_bias, colors = NA, sig_type = c("fdr", "p")) {
-  sig_type <- match.arg(sig_type)
+  
 
   # These variables use non standard evaluation.
   # To avoid R CMD check complaints we initialize them to NULL.
   type <- significant <- strand_1 <- strand_2 <- log2_ratio <- NULL
   sig_plot <- log2_ratio_no1pseudo <- NULL
 
+  # Match argument
+  sig_type <- match.arg(sig_type)
+  
   # if colors parameter not provided, set to default colors
   if (.is_na(colors)) {
     colors <- COLORS6

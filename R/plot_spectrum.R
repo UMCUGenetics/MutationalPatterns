@@ -97,6 +97,7 @@ plot_spectrum <- function(type_occurrences,
   value <- nmuts <- sub_type <- variable <- error_pos <- stdev <- total_mutations <- NULL
   x <- total_individuals <- sem <- error_95 <- NULL
 
+  # Match argument
   error_bars <- match.arg(error_bars)
 
   # If colors parameter not provided, set to default colors

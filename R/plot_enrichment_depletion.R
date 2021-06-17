@@ -58,6 +58,7 @@ plot_enrichment_depletion <- function(df, sig_type = c("fdr", "p")) {
   value <- variable <- observed <- expected <- significant <- NULL
   region <- ratio <- log2_ratio <- sig_plot <- NULL
 
+  # Match argument
   sig_type <- match.arg(sig_type)
 
   # Create dataframe for absolute part of plot

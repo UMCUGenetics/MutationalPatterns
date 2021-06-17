@@ -487,7 +487,7 @@ get_indel_context <- function(vcf_list, ref_genome) {
 #'
 .get_extended_sequence <- function(gr, flank_dist, ref_genome, direction = c("right", "left")) {
   
-  # Check argument
+  # Match argument
   direction <- match.arg(direction)
   
   
@@ -545,7 +545,7 @@ get_indel_context <- function(vcf_list, ref_genome) {
 #'
 .indel_count_n_repeats = function(seq, changed_bases, type = c("deletion", "insertion")){
   
-  # Check argument
+  # Match argument
   type <- match.arg(type)
   
   # Determine nr. repeats.

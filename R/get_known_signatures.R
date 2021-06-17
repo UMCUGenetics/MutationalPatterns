@@ -156,7 +156,7 @@ get_known_signatures <- function(muttype = c("snv",
                                  ),
                                  genome = c("GRCh37", "GRCh38", "mm10")) {
 
-  # Validate arguments
+  # Match arguments
   muttype <- match.arg(muttype)
   source <- match.arg(source)
   sig_type <- match.arg(sig_type)
