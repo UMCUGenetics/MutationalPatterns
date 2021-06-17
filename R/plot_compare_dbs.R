@@ -94,12 +94,6 @@ plot_compare_dbs <- function(profile1, profile2,
   facet_labs_x <- stringr::str_c(levels(counts$REF), ">NN")
   names(facet_labs_x) <- levels(counts$REF)
 
-  # Set colors
-  colors <- c(
-    "#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", "#FB9A99",
-    "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A"
-  )
-
   # Create plot
   fig <- ggplot(counts, aes(x = ALT, y = count, fill = REF)) +
     geom_bar(stat = "identity") +
@@ -109,7 +103,7 @@ plot_compare_dbs <- function(profile1, profile2,
       space = "free_x",
       labeller = labeller(REF = facet_labs_x)
     ) +
-    scale_fill_manual(guide = FALSE, values = colors) +
+    scale_fill_manual(guide = FALSE, values = DBS_COLORS) +
     labs(fill = "Mutation type", title = comp$title, y = "Relative contribution", x = "") +
     theme_minimal() +
     theme(

@@ -29,24 +29,7 @@ count_dbs_contexts <- function(vcf_list) {
   REF <- ALT <- NULL
 
   # Set possible ref and alt combis.
-  categories <- tibble::tibble(
-    "REF" = c(
-      rep("AC", 9), rep("AT", 6), rep("CC", 9), rep("CG", 6),
-      rep("CT", 9), rep("GC", 6), rep("TA", 6), rep("TC", 9),
-      rep("TG", 9), rep("TT", 9)
-    ),
-    "ALT" = c(
-      "CA", "CG", "CT", "GA", "GG", "GT", "TA", "TG", "TT",
-      "CA", "CC", "CG", "GA", "GC", "TA", "AA", "AG", "AT",
-      "GA", "GG", "GT", "TA", "TG", "TT", "AT", "GC", "GT",
-      "TA", "TC", "TT", "AA", "AC", "AG", "GA", "GC", "GG",
-      "TA", "TC", "TG", "AA", "AG", "AT", "CA", "CG", "TA",
-      "AT", "CG", "CT", "GC", "GG", "GT", "AA", "AG", "AT",
-      "CA", "CG", "CT", "GA", "GG", "GT", "AA", "AC", "AT",
-      "CA", "CC", "CT", "GA", "GC", "GT", "AA", "AC", "AG",
-      "CA", "CC", "CG", "GA", "GC", "GG"
-    )
-  )
+  categories <- DBS_CATEGORIES
 
   # Turn grl into list if needed.
   if (inherits(vcf_list, "CompressedGRangesList")) {

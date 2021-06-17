@@ -68,6 +68,7 @@ plot_mbs_contexts <- function(counts, same_y = TRUE) {
       scales = facet_scale,
       labeller = labeller(sample = facet_labs_y)
     ) +
+    scale_fill_manual(values = MBS_COLORS) +
     labs(x = "MBS size", y = "Nr. of MBSs") +
     guides(fill = FALSE) +
     theme_bw() +

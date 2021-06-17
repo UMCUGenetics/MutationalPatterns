@@ -30,22 +30,7 @@ count_indel_contexts <- function(vcf_list) {
   # To avoid R CMD check complaints we initialize them to NULL.
   muttype <- muttype_sub <- NULL
 
-  categories <- tibble::tibble(
-    "muttype" = c(
-      rep("C_deletion", 6), rep("T_deletion", 6), rep("C_insertion", 6),
-      rep("T_insertion", 6), rep("2bp_deletion", 6), rep("3bp_deletion", 6),
-      rep("4bp_deletion", 6), rep("5+bp_deletion", 6), rep("2bp_insertion", 6),
-      rep("3bp_insertion", 6), rep("4bp_insertion", 6), rep("5+bp_insertion", 6),
-      rep("2bp_deletion_with_microhomology", 1), rep("3bp_deletion_with_microhomology", 2),
-      rep("4bp_deletion_with_microhomology", 3), rep("5+bp_deletion_with_microhomology", 5)
-    ),
-    "muttype_sub" = c(
-      rep(c(seq_len(5), "6+"), 2),
-      rep(c(0:4, "5+"), 2),
-      rep(c(seq_len(5), "6+"), 4),
-      rep(c(0:4, "5+"), 4), 1, 1, 2, 1, 2, 3, 1, 2, 3, 4, "5+"
-    )
-  )
+  categories <- INDEL_CATEGORIES
 
   # Turn grl into list if needed.
   if (inherits(vcf_list, "CompressedGRangesList")) {
@@ -121,26 +106,9 @@ count_indel_contexts <- function(vcf_list) {
       muttype_sub = as.character(muttype_sub)
     ) # Ensures column type for later joining
 
-
   # Classify large indels as size 5+
-  ref_sizes <- gr %>%
-    .get_ref() %>%
-    width()
-  alt_sizes <- gr %>%
-    .get_alt() %>%
-    unlist() %>%
-    width()
-  mut_size <- abs(alt_sizes - ref_sizes)
-  mut_size_f <- mut_size >= 5
-  id_context$muttype <- ifelse(mut_size_f,
-    gsub("[0-9]+bp",
-      "5+bp",
-      id_context$muttype,
-      perl = TRUE
-    ),
-    id_context$muttype
-  )
-
+  id_context$muttype = .set_large_indels_as_5plus(id_context$muttype, gr)
+  
   id_context_count <- id_context %>%
     dplyr::group_by(muttype, muttype_sub) %>%
     dplyr::summarise(count = dplyr::n())
@@ -151,4 +119,41 @@ count_indel_contexts <- function(vcf_list) {
     dplyr::select(-muttype, -muttype_sub)
   # colnames(id_context_count_full)[3] = name
   return(id_context_count_full)
+}
+
+
+#' Classify large indels as size 5+
+#' Indels with a size that is more or equal to 5,
+#' are set to size 5+
+#'
+#' @param muttype A vector containing the contexts of the mutations
+#' @param gr GRanges object containing indel mutations in which the context was added with get_indel_context.
+#'
+#' @return A modified version of the vector containing the contexts of the mutations
+#' 
+#' @importFrom magrittr %>%
+#' @noRd
+.set_large_indels_as_5plus = function(muttype, gr){
+  
+  # Determine mutation sizes
+  ref_sizes <- gr %>%
+    .get_ref() %>%
+    width()
+  alt_sizes <- gr %>%
+    .get_alt() %>%
+    unlist() %>%
+    width()
+  mut_size <- abs(alt_sizes - ref_sizes)
+  
+  # Change classification of large mutations into 5+
+  mut_size_f <- mut_size >= 5
+  muttype <- ifelse(mut_size_f,
+                               gsub("[0-9]+bp",
+                                    "5+bp",
+                                    muttype,
+                                    perl = TRUE
+                               ),
+                               muttype
+  )
+  return(muttype)
 }

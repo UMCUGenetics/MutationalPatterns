@@ -27,7 +27,7 @@ count_mbs_contexts <- function(vcf_list) {
   # To avoid R CMD check complaints we initialize them to NULL.
   size <- NULL
 
-  categories <- tibble::tibble("size" = c(3:9, "10+"))
+  categories <- MBS_CATEGORIES
 
   # Turn grl into list if needed.
   if (inherits(vcf_list, "CompressedGRangesList")) {

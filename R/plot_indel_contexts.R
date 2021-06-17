@@ -77,12 +77,6 @@ plot_indel_contexts <- function(counts, same_y = FALSE, extra_labels = FALSE, co
     facet_scale <- "free"
   }
 
-  colors <- c(
-    "#FDBE6F", "#FF8001", "#B0DD8B", "#36A12E", "#FDCAB5", "#FC8A6A",
-    "#F14432", "#BC141A", "#D0E1F2", "#94C4DF", "#4A98C9", "#1764AB",
-    "#E2E2EF", "#B6B6D8", "#8683BD", "#61409B"
-  )
-
   # Add optional extra labels
   if (extra_labels) {
     title <- stringr::str_c(
@@ -117,7 +111,7 @@ plot_indel_contexts <- function(counts, same_y = FALSE, extra_labels = FALSE, co
       scales = facet_scale, space = "free_x",
       labeller = labeller(muttype = facet_labs_x, sample = facet_labs_y)
     ) +
-    scale_fill_manual(values = colors) +
+    scale_fill_manual(values = INDEL_COLORS) +
     theme_bw() +
     labs(fill = "Mutation type", title = title, y = "Nr of indels", x = x_lab) +
     theme(

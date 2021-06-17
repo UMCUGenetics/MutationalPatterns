@@ -67,11 +67,6 @@ plot_main_indel_contexts <- function(counts, same_y = FALSE) {
   names(facet_labs_y) <- nr_muts$sample
 
   # Set plotting parameters
-  colors <- c(
-    "#FDBE6F", "#FF8001", "#B0DD8B", "#36A12E", "#FDCAB5", "#FC8A6A",
-    "#F14432", "#BC141A", "#D0E1F2", "#94C4DF", "#4A98C9", "#1764AB",
-    "#E2E2EF", "#B6B6D8", "#8683BD", "#61409B"
-  )
   if (same_y) {
     facet_scale <- "free_x"
   } else {
@@ -83,7 +78,7 @@ plot_main_indel_contexts <- function(counts, same_y = FALSE) {
     geom_bar(stat = "identity") +
     facet_grid(sample ~ ., labeller = labeller(sample = facet_labs_y), scales = facet_scale) +
     labs(x = "", y = "Nr of indels") +
-    scale_fill_manual(guide = FALSE, values = colors) +
+    scale_fill_manual(guide = FALSE, values = INDEL_COLORS) +
     theme_bw() +
     theme(
       panel.grid.major.x = element_blank(),

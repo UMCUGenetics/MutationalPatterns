@@ -60,10 +60,6 @@ plot_main_dbs_contexts <- function(counts, same_y = FALSE) {
   names(facet_labs_y) <- nr_muts$sample
 
   # Plot settings
-  colors <- c(
-    "#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", "#FB9A99",
-    "#E31A1C", "#FDBF6F", "#FF7F00", "#CAB2D6", "#6A3D9A"
-  )
   if (same_y) {
     facet_scale <- "free_x"
   } else {
@@ -75,7 +71,7 @@ plot_main_dbs_contexts <- function(counts, same_y = FALSE) {
     geom_bar(stat = "identity") +
     facet_grid(sample ~ ., labeller = labeller(sample = facet_labs_y), scales = facet_scale) +
     labs(x = "", y = "Nr of DBSs") +
-    scale_fill_manual(guide = FALSE, values = colors) +
+    scale_fill_manual(guide = FALSE, values = DBS_COLORS) +
     theme_bw() +
     theme(
       panel.grid.major.x = element_blank(),
