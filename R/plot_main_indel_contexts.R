@@ -78,7 +78,7 @@ plot_main_indel_contexts <- function(counts, same_y = FALSE) {
     geom_bar(stat = "identity") +
     facet_grid(sample ~ ., labeller = labeller(sample = facet_labs_y), scales = facet_scale) +
     labs(x = "", y = "Nr of indels") +
-    scale_fill_manual(guide = FALSE, values = INDEL_COLORS) +
+    scale_fill_manual(guide = "none", values = INDEL_COLORS) +
     theme_bw() +
     theme(
       panel.grid.major.x = element_blank(),

@@ -71,7 +71,7 @@ plot_main_dbs_contexts <- function(counts, same_y = FALSE) {
     geom_bar(stat = "identity") +
     facet_grid(sample ~ ., labeller = labeller(sample = facet_labs_y), scales = facet_scale) +
     labs(x = "", y = "Nr of DBSs") +
-    scale_fill_manual(guide = FALSE, values = DBS_COLORS) +
+    scale_fill_manual(guide = "none", values = DBS_COLORS) +
     theme_bw() +
     theme(
       panel.grid.major.x = element_blank(),

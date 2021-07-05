@@ -108,7 +108,7 @@ plot_profile_region <- function(mut_matrix, mode = c("relative_sample", "relativ
         coord_cartesian(ylim = c(0, ymax)) +
         scale_alpha_discrete(range = c(0.4, 1)) +
         scale_y_continuous(breaks = seq(0, ymax, y_axis_break_interval)) +
-        guides(fill = FALSE) +
+        guides(fill = "none") +
         theme_bw() +
         theme(
           axis.title.y = element_text(size = 12, vjust = 1),

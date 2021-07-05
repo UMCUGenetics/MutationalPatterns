@@ -70,7 +70,7 @@ plot_bootstrapped_contribution <- function(contri_boots,
     # Create basis for jitter figure
     fig <- ggplot(contri_tb, aes(x = sig, y = contri, color = sig)) +
       geom_jitter(stat = "identity", height = jitter_height, size = 0.3) +
-      scale_color_discrete(guide = FALSE) +
+      scale_color_discrete(guide = "none") +
       facet_grid(sample ~ .) +
       labs(y = ylab_text)
   } else if (plot_type == "barplot") {
@@ -87,7 +87,7 @@ plot_bootstrapped_contribution <- function(contri_boots,
     fig <- ggplot(contri_tb2, aes(x = sig, y = mean, fill = sig)) +
       geom_bar(stat = "identity") +
       geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.2) +
-      scale_fill_discrete(guide = FALSE) +
+      scale_fill_discrete(guide = "none") +
       facet_grid(sample ~ .) +
       labs(y = ylab_text)
   } else if (plot_type == "dotplot") {

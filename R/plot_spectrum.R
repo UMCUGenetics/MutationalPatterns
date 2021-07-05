@@ -252,7 +252,7 @@ plot_spectrum <- function(type_occurrences,
 
   # Remove legend if required
   if (legend == FALSE) {
-    plot <- plot + guides(fill = FALSE)
+    plot <- plot + guides(fill = "none")
   }
 
   return(plot)

@@ -129,7 +129,7 @@ plot_compare_profiles <- function(profile1,
       y = "Relative contribution",
       title = comp$title
     ) +
-    guides(fill = FALSE) +
+    guides(fill = "none") +
     theme_bw() +
     theme(
       axis.title.y = element_text(size = 12, vjust = 1),

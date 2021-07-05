@@ -151,7 +151,7 @@
         scale_fill_manual(
             limits = c("low_delta", "high_delta"),
             values = c("grey", "red"),
-            guide = FALSE
+            guide = "none"
         ) +
         labs(
             x = xlab,

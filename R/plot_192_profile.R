@@ -98,7 +98,7 @@ plot_192_profile <- function(mut_matrix, colors = NA, ymax = 0.2, condensed = FA
         ylab("Relative contribution") +
         coord_cartesian(ylim = c(0, ymax)) +
         scale_y_continuous(breaks = seq(0, ymax, 0.1)) +
-        guides(fill = FALSE) +
+        guides(fill = "none") +
         theme_bw() +
         theme(
           axis.title.y = element_text(size = 12, vjust = 1),

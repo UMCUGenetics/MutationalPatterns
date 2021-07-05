@@ -103,7 +103,7 @@ plot_compare_dbs <- function(profile1, profile2,
       space = "free_x",
       labeller = labeller(REF = facet_labs_x)
     ) +
-    scale_fill_manual(guide = FALSE, values = DBS_COLORS) +
+    scale_fill_manual(guide = "none", values = DBS_COLORS) +
     labs(fill = "Mutation type", title = comp$title, y = "Relative contribution", x = "") +
     theme_minimal() +
     theme(

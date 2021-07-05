@@ -93,7 +93,7 @@ plot_dbs_contexts <- function(counts, same_y = FALSE, condensed = FALSE) {
       space = "free_x",
       labeller = labeller(REF = facet_labs_x, sample = facet_labs_y)
     ) +
-    scale_fill_manual(guide = FALSE, values = DBS_COLORS) +
+    scale_fill_manual(guide = "none", values = DBS_COLORS) +
     labs(fill = "Mutation type", title = "", y = "Nr of DBSs", x = "") +
     theme_bw() +
     theme(

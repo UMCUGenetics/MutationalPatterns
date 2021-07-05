@@ -70,7 +70,7 @@ plot_mbs_contexts <- function(counts, same_y = TRUE) {
     ) +
     scale_fill_manual(values = MBS_COLORS) +
     labs(x = "MBS size", y = "Nr. of MBSs") +
-    guides(fill = FALSE) +
+    guides(fill = "none") +
     theme_bw() +
     theme(
       panel.grid.major.x = element_blank(),

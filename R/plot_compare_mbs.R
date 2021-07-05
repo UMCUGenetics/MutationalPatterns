@@ -85,7 +85,7 @@ plot_compare_mbs <- function(profile1, profile2,
       scales = "free_y"
     ) +
     labs(x = "MBS size", y = "Relative contribution", title = comp$title) +
-    scale_fill_manual(values = MBS_COLORS, guide = FALSE) +
+    scale_fill_manual(values = MBS_COLORS, guide = "none") +
     theme_classic() +
     theme(
       legend.background = element_rect(fill = "transparent", colour = NA),

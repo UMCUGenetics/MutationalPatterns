@@ -282,7 +282,7 @@ plot_spectrum_region <- function(type_occurrences,
 
   # Remove legend if required
   if (legend == FALSE) {
-    fig <- fig + guides(fill = FALSE, alpha = FALSE)
+    fig <- fig + guides(fill = "none", alpha = "none")
   }
 
   return(fig)
