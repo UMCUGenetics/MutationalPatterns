@@ -24,42 +24,44 @@
     removed_sigs <- vector("list", nsigs)
     removed_sigs[[1]] <- "None"
     
+    if (nsigs > 1){ # Only remove signatures if there is more than 1.
     # Sequentially remove the signature with the lowest contribution
-    for (j in seq(2, nsigs)) {
-        
-        # Remove signature with the weakest relative contribution
-        contri_order <- fit_res$contribution %>%
-            prop.table(2) %>%
-            rowSums() %>%
-            order()
-        weakest_sig_index <- contri_order[1]
-        weakest_sig <- colnames(my_signatures)[weakest_sig_index]
-        removed_sigs[[j]] <- weakest_sig
-        signatures_sel <- my_signatures[, -weakest_sig_index, drop = FALSE]
-        
-        
-        # Fit with new signature selection
-        fit_res <- fit_to_signatures(mut_mat_sample, signatures_sel)
-        sim_new <- .get_cos_sim_ori_vs_rec(mut_mat_sample, fit_res)
-        
-        if (is.nan(sim_new) == TRUE) {
-            sim_new <- 0
-            warning("New similarity between the original and the reconstructed 
-                          spectra after the removal of a signature was NaN. 
-                          It has been converted into a 0. 
-                          This happened with the following fit_res:")
-            print(fit_res)
-        }
-        sims[[j]] <- sim_new
-        
-        # Check if the loss in cosine similarity between the original vs reconstructed after removing the signature is below the cutoff.
-        delta <- sim - sim_new
-        if (delta <= max_delta) {
-            my_signatures <- signatures_sel
-            sim <- sim_new
-        }
-        else {
-            break
+        for (j in seq(2, nsigs)) {
+            
+            # Remove signature with the weakest relative contribution
+            contri_order <- fit_res$contribution %>%
+                prop.table(2) %>%
+                rowSums() %>%
+                order()
+            weakest_sig_index <- contri_order[1]
+            weakest_sig <- colnames(my_signatures)[weakest_sig_index]
+            removed_sigs[[j]] <- weakest_sig
+            signatures_sel <- my_signatures[, -weakest_sig_index, drop = FALSE]
+            
+            
+            # Fit with new signature selection
+            fit_res <- fit_to_signatures(mut_mat_sample, signatures_sel)
+            sim_new <- .get_cos_sim_ori_vs_rec(mut_mat_sample, fit_res)
+            
+            if (is.nan(sim_new) == TRUE) {
+                sim_new <- 0
+                warning("New similarity between the original and the reconstructed 
+                              spectra after the removal of a signature was NaN. 
+                              It has been converted into a 0. 
+                              This happened with the following fit_res:")
+                print(fit_res)
+            }
+            sims[[j]] <- sim_new
+            
+            # Check if the loss in cosine similarity between the original vs reconstructed after removing the signature is below the cutoff.
+            delta <- sim - sim_new
+            if (delta <= max_delta) {
+                my_signatures <- signatures_sel
+                sim <- sim_new
+            }
+            else {
+                break
+            }
         }
     }
     
@@ -128,11 +130,12 @@
     # Determine if the final removed signature exceeded the cutoff.
     sims_l <- length(sims)
     col <- rep("low_delta", sims_l)
-    final_delta <- sims[sims_l - 1] - sims[sims_l]
-    if (final_delta > max_delta) {
-        col[sims_l] <- "high_delta"
+    if (sims_l > 1){ # Check if any signatures have been removed, before calculating the delta.
+        final_delta <- sims[sims_l - 1] - sims[sims_l]
+        if (final_delta > max_delta) {
+            col[sims_l] <- "high_delta"
+        }
     }
-    
     # Set the x-axis label and theme
     if (method == "backwards"){
         xlab <- "Removed signatures"

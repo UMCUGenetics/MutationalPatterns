@@ -1,3 +1,12 @@
+MutationalPatterns v3.3.4 (Release date: 2021-07-16)
+
+Changes:
+
+* Bugfixes:
+  + Fixed a bug in fit_to_signatures_strict, which caused it to trow an error when only a single signature contributed to a mutation matrix.
+
+
+
 MutationalPatterns v3.3.3 (Release date: 2021-07-05)
 
 Changes:
