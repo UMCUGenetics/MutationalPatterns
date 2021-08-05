@@ -85,8 +85,15 @@ plot_rainfall <- function(vcf,
   # To avoid R CMD check complaints we initialize them to NULL.
   location <- NULL
 
+  
+  # Check vcf argument
+  if (!inherits(vcf, "GRanges")) {
+    .not_gr(vcf)
+  }
+  
   # Match argument
   type <- match.arg(type)
+  
   
   # If colors parameter not provided, set to default colors.
   # Also retrieve mutation categories

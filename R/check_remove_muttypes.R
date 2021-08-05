@@ -290,6 +290,27 @@
                Please provide an object of the correct class."))
 }
 
+#' Throw an error for when an argument should be a GRanges object.
+#'
+#' @details
+#' This function is called by other functions, when an argument should be a GRanges object, but isn't.
+#' It throws an error showing the actual class of the argument.
+#'
+#' @param arg Argument. Any object that should have been a GRanges, but isn't.
+#' @noRd
+#' @return An error
+#'
+.not_gr <- function(arg) {
+  arg_name <- deparse(substitute(arg))
+  arg_class <- class(arg)[[1]]
+  stop(stringr::str_c(arg_name, " should be a GRanges object, instead it is a ", arg_class, " object.
+               Please provide an object of the correct class."))
+}
+
+
+
+
+
 #' Check that the seqnames of a GRangesList or GRanges object are present in a ref_genome
 #'
 #' @details
