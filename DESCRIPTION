@@ -55,7 +55,9 @@ Imports:
     Biostrings (>= 2.40.0),
     ggdendro (>= 0.1-20),
     cowplot (>= 0.9.2),
-    ggalluvial (>= 0.12.2)
+    ggalluvial (>= 0.12.2),
+    RColorBrewer,
+    methods
 Depends:
     R (>= 4.1.0),
     GenomicRanges (>= 1.24.0),
@@ -76,6 +78,6 @@ Suggests:
 biocViews: Genetics, SomaticMutation
 ZipData: NA
 LazyData: false
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
