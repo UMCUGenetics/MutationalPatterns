@@ -26,8 +26,7 @@ calculate_lesion_segregation(
 \item{split_by_type}{Boolean describing whether the lesion
 segregation should be calculated for all SNVs together or per 96 substitution context. (Default: FALSE)}
 
-\item{ref_genome}{A string matching the name of a BSgenome library
-corresponding to the reference genome.
+\item{ref_genome}{BSgenome reference genome object.
 Only needed when split_by_type is TRUE with the binomial test
 or when using the rl20 test.}
 

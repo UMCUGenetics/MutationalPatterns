@@ -19,8 +19,7 @@ read_vcfs_as_granges(
 
 \item{sample_names}{Character vector of sample names}
 
-\item{genome}{A string matching the name of a BSgenome library
-corresponding to the reference genome of your VCFs}
+\item{genome}{BSgenome reference genome object}
 
 \item{group}{Selector for a seqlevel group.  All seqlevels outside
 of this group will be removed.  Possible values:

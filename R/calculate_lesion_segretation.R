@@ -36,8 +36,7 @@
 #'              * 'rl20' Calculates rl20 value and the genomic span of the associated runs set.;
 #' @param split_by_type Boolean describing whether the lesion
 #' segregation should be calculated for all SNVs together or per 96 substitution context. (Default: FALSE)
-#' @param ref_genome A string matching the name of a BSgenome library
-#'               corresponding to the reference genome.
+#' @param ref_genome BSgenome reference genome object.
 #'               Only needed when split_by_type is TRUE with the binomial test
 #'               or when using the rl20 test.
 #' @param chromosomes The chromosomes that are used. Only needed when using the rl20 test.
@@ -169,8 +168,7 @@ calculate_lesion_segregation <- function(vcf_list,
 #'              * 'rl20' Calculates rl20 value and the genomic span of the associated runs set.;
 #' @param split_by_type Boolean describing whether the lesion
 #' segregation should be calculated for all SNVs together or per 96 substitution context.
-#' @param ref_genome A string matching the name of a BSgenome library
-#'               corresponding to the reference genome.
+#' @param ref_genome BSgenome reference genome object.
 #'               Only needed when split_by_type is TRUE with the binomial test
 #'               or when using the rl20 test.
 #' @param chromosomes The chromosomes that are used. Only needed when using the rl20 test.
