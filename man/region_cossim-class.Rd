@@ -30,6 +30,9 @@ analysis
 
 \item{\code{stepsize}}{The number of mutations that a window slides in each step.}
 
+\item{\code{extension}}{The number of bases, that's extracted upstream and
+downstream of the base substitutions, to create the mutation matrices.}
+
 \item{\code{chromosomes}}{Vector of chromosome/contig names of the reference genome
 to be plotted.}
 

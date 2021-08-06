@@ -10,7 +10,8 @@ determine_regional_similarity(
   chromosomes,
   window_size = 100,
   stepsize = 25,
-  tri_correction = FALSE,
+  extension = 1,
+  oligo_correction = FALSE,
   exclude_self_mut_mat = TRUE,
   max_window_size_gen = 2e+07
 )
@@ -28,7 +29,11 @@ to be plotted.}
 \item{stepsize}{The number of mutations that a window slides in each step.
 (Default: 25)}
 
-\item{tri_correction}{Boolean describing whether oligonucleotide frequency
+\item{extension}{The number of bases, that's extracted upstream and
+downstream of the base substitutions, to create the mutation matrices.
+(Default: 1).}
+
+\item{oligo_correction}{Boolean describing whether oligonucleotide frequency
 correction should be applied. (Default: FALSE)}
 
 \item{exclude_self_mut_mat}{Boolean describing whether the mutations in a
@@ -46,33 +51,39 @@ A "region_cossim" object containing both the cosine similarities and
 Calculate the cosine similarities between the global mutation profile and the
 mutation profile of smaller genomic windows, using a sliding window approach.
 Regions with a very different mutation profile can be identified in this way.
-This function generally requires more than 100,000 mutations to work
-properly.
+This function generally requires many mutations (~100,000) to work properly.
 }
 \details{
 First a global mutation matrix is calculated using all mutations.
-Next, a sliding window is used. This means that we create a window containing
-the first x mutations. The cosine similarity, between the mutation profiles
-of this window and the global mutation matrix, is then calculated. The window
-then slides y mutations to the right and the cosine similarity is again
-calculated. This process is repeated until the final mutation on a chromosome
-is reached. This process is performed separately per chromosome. Windows that
-span a too large region of the genome are removed, because they are unlikely
-to contain biologically relevant information.
+  Next, a sliding window is used. This means that we create a window
+  containing the first x mutations. The cosine similarity, between the
+  mutation profiles of this window and the global mutation matrix, is then
+  calculated. The window then slides y mutations to the right and the cosine
+  similarity is again calculated. This process is repeated until the final
+  mutation on a chromosome is reached. This process is performed separately
+  per chromosome. Windows that span a too large region of the genome are
+  removed, because they are unlikely to contain biologically relevant
+  information.
 
-It's possible to correct for the oligonucleotide frequency of the windows.
-This is done by calculating the cosine similarity of the oligonucleotide
-frequency between each window and the genome. The cosine similarity of the
-mutation profiles is then divided by the oligonucleotide similarity. This
-ensures that regions with an abnormal oligonucleotide frequency don't show up
-as having a very different profile. The oligonucleotide frequency correction
-slows down the function, so we advise the user to keep it off for exploratory
-analyses and to only turn it on to validate interesting results.
+  The analysis can be performed for trinucleotides contexts, for a larger
+  context, or for just the base substitutions. A smaller context might miss
+  detailed differences in mutation profiles, but is also less noisy. We
+  recommend using a smaller extension when analyzing small datasets.
 
-By default the mutations in a window are subtracted from the global mutation
-matrix, before calculating the cosine similarity. This increases sensitivity,
-but could also decrease specificity. This subtraction can be turned of with
-the 'exclude_self_mut_mat' argument.
+  It's possible to correct for the oligonucleotide frequency of the windows.
+  This is done by calculating the cosine similarity of the oligonucleotide
+  frequency between each window and the genome. The cosine similarity of the
+  mutation profiles is then divided by the oligonucleotide similarity. This
+  ensures that regions with an abnormal oligonucleotide frequency don't show
+  up as having a very different profile. The oligonucleotide frequency
+  correction slows down the function, so we advise the user to keep it off
+  for exploratory analyses and to only turn it on to validate interesting
+  results.
+
+  By default the mutations in a window are subtracted from the global
+  mutation matrix, before calculating the cosine similarity. This increases
+  sensitivity, but could also decrease specificity. This subtraction can be
+  turned of with the 'exclude_self_mut_mat' argument.
 }
 \examples{
 
@@ -96,13 +107,21 @@ library(ref_genome, character.only = TRUE)
 
 ## Determine the regional similarities. Here we use a small window size to make the function work.
 ## In practice, we recommend a larger window size.
-regional_sims = determine_regional_similarity(gr, 
-  ref_genome, chromosomes, 
-  window_size = 40, 
-  stepsize = 10, 
+regional_sims = determine_regional_similarity(gr,
+  ref_genome, chromosomes,
+  window_size = 40,
+  stepsize = 10,
   max_window_size_gen = 40000000
 )
 
+## Here we use an extensiof of 0 to reduce noise.
+regional_sims_0_extension = determine_regional_similarity(gr,
+  ref_genome, chromosomes,
+  window_size = 40,
+  stepsize = 10,
+  extension = 0,
+  max_window_size_gen = 40000000
+)
 }
 \seealso{
 \code{\link{plot_regional_similarity}}

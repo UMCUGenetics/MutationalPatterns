@@ -20,8 +20,9 @@ library(ref_genome, character.only = TRUE)
 # Determine the regional similarities. Here we use a small window size to make the function work.
 # In practice, we recommend a larger window size.
 output = determine_regional_similarity(gr, ref_genome, chromosomes, window_size = 40, stepsize = 10, max_window_size_gen = 40000000)
-output_tri = determine_regional_similarity(gr, ref_genome, chromosomes[6], window_size = 40, stepsize = 40, tri_correction = TRUE, max_window_size_gen = 40000000)
+output_oligo = determine_regional_similarity(gr, ref_genome, chromosomes[6], window_size = 40, stepsize = 40, oligo_correction = TRUE, max_window_size_gen = 40000000)
 output_notexcl = determine_regional_similarity(gr, ref_genome, chromosomes, window_size = 40, stepsize = 10, exclude_self_mut_mat = FALSE, max_window_size_gen = 40000000)
+output_smallext = determine_regional_similarity(gr, ref_genome, chromosomes, window_size = 40, stepsize = 10, extension = 0, max_window_size_gen = 40000000)
 
 # Load expected
 expected <- readRDS(system.file("states/regional_sims.rds",
@@ -31,18 +32,20 @@ expected <- readRDS(system.file("states/regional_sims.rds",
 # Run tests
 test_that("Output has correct class", {
   expect_true(inherits(output, c("region_cossim")))
-  expect_true(inherits(output_tri, c("region_cossim")))
+  expect_true(inherits(output_oligo, c("region_cossim")))
   expect_true(inherits(output_notexcl, c("region_cossim")))
-  
+  expect_true(inherits(output_smallext, c("region_cossim")))
 })
 
 test_that("Output has correct dimensions", {
   expect_equal(dim(output@sim_tb), c(152, 8))
   expect_equal(dim(output@pos_tb), c(1789, 3))
-  expect_equal(dim(output_tri@sim_tb), c(6, 10))
-  expect_equal(dim(output_tri@pos_tb), c(269, 3))
+  expect_equal(dim(output_oligo@sim_tb), c(6, 10))
+  expect_equal(dim(output_oligo@pos_tb), c(269, 3))
   expect_equal(dim(output_notexcl@sim_tb), c(152, 8))
   expect_equal(dim(output_notexcl@pos_tb), c(1789, 3))
+  expect_equal(dim(output_smallext@sim_tb), c(152, 8))
+  expect_equal(dim(output_smallext@pos_tb), c(1789, 3))
 })
 
 test_that("transforms correctly", {
@@ -54,5 +57,9 @@ test_that("exclude_self_mut_mat reduces cosine similarity", {
 })
 
 test_that("oligonucleotide frequency correction increases cosine similarity", {
-  expect_equal(sum(output_tri@sim_tb$corrected_cossim < output_tri@sim_tb$cossim), 0)
+  expect_equal(sum(output_oligo@sim_tb$corrected_cossim < output_oligo@sim_tb$cossim), 0)
+})
+
+test_that("A smaller extension increases cosine similarity", {
+  expect_equal(sum(output@sim_tb$cossim > output_smallext@sim_tb$cossim), 0)
 })

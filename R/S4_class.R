@@ -16,6 +16,8 @@ NULL
 #' @slot muts_per_chr Vector containing the number of mutations per chromosome.
 #' @slot mean_window_size The mean length of the genome covered by the windows.
 #' @slot stepsize The number of mutations that a window slides in each step.
+#' @slot extension The number of bases, that's extracted upstream and
+#'   downstream of the base substitutions, to create the mutation matrices.
 #' @slot chromosomes Vector of chromosome/contig names of the reference genome
 #'   to be plotted.
 #' @slot exclude_self_mut_mat Boolean describing whether the mutations in a
@@ -25,7 +27,7 @@ NULL
 #' @export
 setClass("region_cossim", slots = c("sim_tb", "pos_tb", "chr_lengths", "window_size", 
                                    "max_window_size_gen", "ref_genome", "muts_per_chr", 
-                                   "mean_window_size", "stepsize", "chromosomes", "exclude_self_mut_mat"))
+                                   "mean_window_size", "stepsize", "extension", "chromosomes", "exclude_self_mut_mat"))
 
 #' An S4 method to show an instance of the region_cossim class.
 #' 
@@ -41,6 +43,7 @@ setMethod("show", signature = "region_cossim", function(object){
         "Mutations per chromosome: \n", sep = "")
     cat(object@muts_per_chr)
 })
+
 #' An S4 generic to get the sim_tb from a region_cossim object.
 #' 
 #' @param x A region_cossim object

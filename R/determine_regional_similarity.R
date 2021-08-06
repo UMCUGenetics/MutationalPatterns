@@ -3,32 +3,38 @@
 #' Calculate the cosine similarities between the global mutation profile and the
 #' mutation profile of smaller genomic windows, using a sliding window approach.
 #' Regions with a very different mutation profile can be identified in this way.
-#' This function generally requires more than 100,000 mutations to work
-#' properly.
+#' This function generally requires many mutations (~100,000) to work properly.
 #'
 #' @details First a global mutation matrix is calculated using all mutations.
-#' Next, a sliding window is used. This means that we create a window containing
-#' the first x mutations. The cosine similarity, between the mutation profiles
-#' of this window and the global mutation matrix, is then calculated. The window
-#' then slides y mutations to the right and the cosine similarity is again
-#' calculated. This process is repeated until the final mutation on a chromosome
-#' is reached. This process is performed separately per chromosome. Windows that
-#' span a too large region of the genome are removed, because they are unlikely
-#' to contain biologically relevant information.
+#'   Next, a sliding window is used. This means that we create a window
+#'   containing the first x mutations. The cosine similarity, between the
+#'   mutation profiles of this window and the global mutation matrix, is then
+#'   calculated. The window then slides y mutations to the right and the cosine
+#'   similarity is again calculated. This process is repeated until the final
+#'   mutation on a chromosome is reached. This process is performed separately
+#'   per chromosome. Windows that span a too large region of the genome are
+#'   removed, because they are unlikely to contain biologically relevant
+#'   information.
 #'
-#' It's possible to correct for the oligonucleotide frequency of the windows.
-#' This is done by calculating the cosine similarity of the oligonucleotide
-#' frequency between each window and the genome. The cosine similarity of the
-#' mutation profiles is then divided by the oligonucleotide similarity. This
-#' ensures that regions with an abnormal oligonucleotide frequency don't show up
-#' as having a very different profile. The oligonucleotide frequency correction
-#' slows down the function, so we advise the user to keep it off for exploratory
-#' analyses and to only turn it on to validate interesting results.
+#'   The analysis can be performed for trinucleotides contexts, for a larger
+#'   context, or for just the base substitutions. A smaller context might miss
+#'   detailed differences in mutation profiles, but is also less noisy. We
+#'   recommend using a smaller extension when analyzing small datasets.
 #'
-#' By default the mutations in a window are subtracted from the global mutation
-#' matrix, before calculating the cosine similarity. This increases sensitivity,
-#' but could also decrease specificity. This subtraction can be turned of with
-#' the 'exclude_self_mut_mat' argument.
+#'   It's possible to correct for the oligonucleotide frequency of the windows.
+#'   This is done by calculating the cosine similarity of the oligonucleotide
+#'   frequency between each window and the genome. The cosine similarity of the
+#'   mutation profiles is then divided by the oligonucleotide similarity. This
+#'   ensures that regions with an abnormal oligonucleotide frequency don't show
+#'   up as having a very different profile. The oligonucleotide frequency
+#'   correction slows down the function, so we advise the user to keep it off
+#'   for exploratory analyses and to only turn it on to validate interesting
+#'   results.
+#'
+#'   By default the mutations in a window are subtracted from the global
+#'   mutation matrix, before calculating the cosine similarity. This increases
+#'   sensitivity, but could also decrease specificity. This subtraction can be
+#'   turned of with the 'exclude_self_mut_mat' argument.
 #'
 #' @param vcf GRanges object
 #' @param ref_genome BSgenome reference genome object
@@ -37,7 +43,10 @@
 #' @param window_size The number of mutations in a window. (Default: 100)
 #' @param stepsize The number of mutations that a window slides in each step.
 #'   (Default: 25)
-#' @param tri_correction Boolean describing whether oligonucleotide frequency
+#' @param extension The number of bases, that's extracted upstream and
+#'   downstream of the base substitutions, to create the mutation matrices.
+#'   (Default: 1).
+#' @param oligo_correction Boolean describing whether oligonucleotide frequency
 #'   correction should be applied. (Default: FALSE)
 #' @param exclude_self_mut_mat Boolean describing whether the mutations in a
 #'   window should be subtracted from the global mutation matrix. (Default:
@@ -76,19 +85,28 @@
 #'
 #' ## Determine the regional similarities. Here we use a small window size to make the function work.
 #' ## In practice, we recommend a larger window size.
-#' regional_sims = determine_regional_similarity(gr, 
-#'   ref_genome, chromosomes, 
-#'   window_size = 40, 
-#'   stepsize = 10, 
+#' regional_sims = determine_regional_similarity(gr,
+#'   ref_genome, chromosomes,
+#'   window_size = 40,
+#'   stepsize = 10,
 #'   max_window_size_gen = 40000000
 #' )
 #' 
+#' ## Here we use an extensiof of 0 to reduce noise.
+#' regional_sims_0_extension = determine_regional_similarity(gr,
+#'   ref_genome, chromosomes,
+#'   window_size = 40,
+#'   stepsize = 10,
+#'   extension = 0,
+#'   max_window_size_gen = 40000000
+#' )
 determine_regional_similarity <- function(vcf,
                                           ref_genome,
                                           chromosomes,
                                           window_size = 100,
                                           stepsize = 25,
-                                          tri_correction = FALSE,
+                                          extension = 1,
+                                          oligo_correction = FALSE,
                                           exclude_self_mut_mat = TRUE,
                                           max_window_size_gen = 20000000){
     
@@ -113,7 +131,7 @@ determine_regional_similarity <- function(vcf,
     # Determine global mutation matrix.
     # This is done before preprocessing the gr, 
     # so that subsetting a single chromosome won't affect the global mutation matrix.
-    mut_mat_total <- mut_matrix(vcf, ref_genome)
+    mut_mat_total <- mut_matrix(vcf, ref_genome, extension)
     message("Created main mutation matrix")
     
     # Preprocess the gr
@@ -142,9 +160,9 @@ determine_regional_similarity <- function(vcf,
     muts_per_chr <- S4Vectors::elementNROWS(grl)
     
     # Determine the global nucleotide context if requested.
-    if (tri_correction == T){
+    if (oligo_correction == T){
         all_seq <- BSgenome::getSeq(ref_genome, chromosomes)
-        all_tricontext <- .get_tri_contexts(all_seq, chromosomes) %>% 
+        all_tricontext <- .get_oligo_contexts(all_seq, chromosomes, extension) %>% 
             rowSums() %>%
             as.matrix()
     } else{
@@ -156,9 +174,10 @@ determine_regional_similarity <- function(vcf,
                                                                      ref_genome = ref_genome,
                                                                      window_size = window_size,
                                                                      stepsize,
+                                                                     extension,
                                                                      mut_mat_total,
                                                                      all_tricontext = all_tricontext,
-                                                                     tri_correction,
+                                                                     oligo_correction,
                                                                      exclude_self_mut_mat,
                                                                      max_window_size_gen = max_window_size_gen))
     
@@ -186,53 +205,58 @@ determine_regional_similarity <- function(vcf,
                "muts_per_chr" = muts_per_chr,
                "mean_window_size" = mean_window_size,
                "stepsize" = stepsize,
+               "extension" = extension,
                "chromosomes" = chromosomes,
                "exclude_self_mut_mat" = exclude_self_mut_mat)
     return(sims)
 }
 
-#' Caclulate the number of mutations per oligonucleotide context per window
+#' Calculate the number of mutations per oligonucleotide context per window
 #'
 #' @param seqs DNAStringSet of windows.
 #' @param window_names A vector describing the names of each window (Default: my_window).
-#'
+#' @param extension The number of bases, that's extracted upstream and
+#' downstream of the base substitutions, to create the mutation matrices. 
+#' 
 #' @return A dataframe showing the number of mutations per oligonucleotide context per window.
 #' @noRd
 #' @importFrom magrittr %>%
 #'
-.get_tri_contexts <- function(seqs, window_names = "my_window"){
+.get_oligo_contexts <- function(seqs, window_names = "my_window", extension){
     
     
     # Determine oligo nucleotide frequencies.
-    tri_contexts = Biostrings::oligonucleotideFrequency(seqs, width = 3)
+    oligo_width = 1 + (2 * extension)
+    oligo_contexts = Biostrings::oligonucleotideFrequency(seqs, width = oligo_width)
     
     # Get the results in a tibble.
-    if (inherits(tri_contexts, "integer")){
-        tri_contexts_t <- tibble::enframe(tri_contexts, name = "type", value = window_names)
-    } else if (inherits(tri_contexts, "matrix")){
-        tri_contexts_t <- tri_contexts %>% 
+    if (inherits(oligo_contexts, "integer")){
+        oligo_contexts_t <- tibble::enframe(oligo_contexts, name = "type", value = window_names)
+    } else if (inherits(oligo_contexts, "matrix")){
+        oligo_contexts_t <- oligo_contexts %>% 
             t() %>% 
             as.data.frame() %>% 
             tibble::rownames_to_column("type")
     }
     
     # Reverse complement the G and A mutations
-    types <- tri_contexts_t$type
+    types <- oligo_contexts_t$type
+    substitution_i = ceiling(oligo_width/2)
     bases <- types %>% 
-        stringr::str_sub(start = 2, end = 2)
+        stringr::str_sub(start = substitution_i, end = substitution_i)
     context_to_reverse_i <- bases %in% c("G", "A")
     types_reversed <- types[context_to_reverse_i] %>% 
         Biostrings::DNAStringSet() %>% 
         Biostrings::reverseComplement() %>%
         as.character()
-    tri_contexts_t$type[context_to_reverse_i] <- types_reversed
+    oligo_contexts_t$type[context_to_reverse_i] <- types_reversed
     
     # Sum the contexts together
-    tri_contexts_t <- tri_contexts_t %>% 
+    oligo_contexts_t <- oligo_contexts_t %>% 
         dplyr::group_by(type) %>% 
         dplyr::summarise_all(sum) %>% 
         tibble::column_to_rownames("type")
-    return(tri_contexts_t)
+    return(oligo_contexts_t)
 }
 
 #' Determine regional mutation pattern similarity for one chromosome
@@ -241,10 +265,12 @@ determine_regional_similarity <- function(vcf,
 #' @param ref_genome BSgenome reference genome object
 #' @param window_size The number of mutations in a window.
 #' @param stepsize The number of mutations that a window slides in each step.
+#' @param extension The number of bases, that's extracted upstream and
+#' downstream of the base substitutions, to create the mutation matrices. 
 #' @param mut_mat_total Matrix containing mutation counts for all mutations.
 #' @param all_tricontext Matrix containing the global oligonucleotide frequencies. This is only used when,
 #' correcting for oligonucleotide frequency.
-#' @param tri_correction Boolean describing whether oligonucleotide frequency correction should be applied.
+#' @param oligo_correction Boolean describing whether oligonucleotide frequency correction should be applied.
 #' @param exclude_self_mut_mat Boolean describing whether the mutations in a window should be subtracted from the global mutation matrix.
 #' @param max_window_size_gen The maximum size of a window before it is removed.
 #'
@@ -255,10 +281,11 @@ determine_regional_similarity <- function(vcf,
 .determine_regional_similarity_chr <- function(gr, 
                                  ref_genome,
                                  window_size, 
-                                 stepsize, 
+                                 stepsize,
+                                 extension,
                                  mut_mat_total, 
                                  all_tricontext, 
-                                 tri_correction,
+                                 oligo_correction,
                                  exclude_self_mut_mat,
                                  max_window_size_gen){
     
@@ -322,7 +349,7 @@ determine_regional_similarity <- function(vcf,
     # Determine the context of each mutation. 
     # Then use the 'all_seq' position index to repeat the contexts for muts that occur in more than 1 window.
     # This is then used to create the mut matrix.
-    types <- type_context(gr, ref_genome)
+    types <- type_context(gr, ref_genome, extension)
     types_allwindows <- list("types" = types$types[all_seq], "context" = types$context[all_seq])
     mut_mat <- mut_96_occurrences(types_allwindows, rep(window_size, nr_windows))
     message(paste0("Finished the mutation matrix for chromosome: ", chr))
@@ -340,7 +367,7 @@ determine_regional_similarity <- function(vcf,
     window_end <- pos[window_i_end]
     
     # Determine trinucleotide context of windows. And its similarity to the entire genome.
-    if (tri_correction){
+    if (oligo_correction){
         
         
         # This is done in a loop to prevent vector memory exhaustion.
@@ -351,7 +378,7 @@ determine_regional_similarity <- function(vcf,
             window_seqs <- Biostrings::getSeq(ref_genome, rep(chr, length(window_begin[i:end])), window_begin[i:end], window_end[i:end])
             
             # Get the tri context
-            context_windows <- .get_tri_contexts(window_seqs)
+            context_windows <- .get_oligo_contexts(window_seqs, extension = extension)
             
             # Determine the cosine similarity in nucleotide contexts of the windows with the global context.
             context_sim <- cos_sim_matrix(context_windows, all_tricontext)

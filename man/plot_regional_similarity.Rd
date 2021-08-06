@@ -7,7 +7,7 @@
 plot_regional_similarity(
   region_cossim,
   per_chrom = FALSE,
-  tri_correction = TRUE,
+  oligo_correction = TRUE,
   max_cossim = NA
 )
 }
@@ -16,7 +16,7 @@ plot_regional_similarity(
 
 \item{per_chrom}{Boolean. Determines whether to create a separate plot per chromosome. (Default: FALSE)}
 
-\item{tri_correction}{Boolean describing whether the oligonucleotide
+\item{oligo_correction}{Boolean describing whether the oligonucleotide
 frequency corrected cosine similarities should be plotted. If no correction
 has been applied then the regular cosine similarities will be plotted.
 (Default: TRUE)}
