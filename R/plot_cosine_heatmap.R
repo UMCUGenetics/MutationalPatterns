@@ -7,8 +7,8 @@
 #'                       Result from \code{\link{cos_sim_matrix}}
 #' @param col_order Character vector with the desired order of the columns names for plotting. Optional.
 #' @param row_order Character vector with the desired order of the row names for plotting. Optional.
-#' @param cluster_rows Hierarchically cluster rows based on eucledian distance. Default = TRUE.
-#' @param cluster_cols Hierarchically cluster cols based on eucledian distance. Default = FALSE.
+#' @param cluster_rows Hierarchically cluster rows based on euclidean distance. Default = TRUE.
+#' @param cluster_cols Hierarchically cluster cols based on euclidean distance. Default = FALSE.
 #' @param method The agglomeration method to be used for hierarchical clustering. This should be one of
 #' "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC)
 #' or "centroid" (= UPGMC). Default = "complete".
@@ -96,7 +96,7 @@ plot_cosine_heatmap <- function(cos_sim_matrix, col_order = NA, row_order = NA, 
           samples in the explained matrix", call. = FALSE)
     }
   } else if (cluster_rows == TRUE) {
-    # cluster samples based on eucledian distance between relative contribution
+    # cluster samples based on euclidean distance between relative contribution
     hc.sample <- hclust(dist(cos_sim_matrix), method = method)
     # order samples according to clustering
     row_order <- rownames(cos_sim_matrix)[hc.sample$order]

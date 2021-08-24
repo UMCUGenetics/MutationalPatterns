@@ -22,9 +22,9 @@ Result from \code{\link{cos_sim_matrix}}}
 
 \item{row_order}{Character vector with the desired order of the row names for plotting. Optional.}
 
-\item{cluster_rows}{Hierarchically cluster rows based on eucledian distance. Default = TRUE.}
+\item{cluster_rows}{Hierarchically cluster rows based on euclidean distance. Default = TRUE.}
 
-\item{cluster_cols}{Hierarchically cluster cols based on eucledian distance. Default = FALSE.}
+\item{cluster_cols}{Hierarchically cluster cols based on euclidean distance. Default = FALSE.}
 
 \item{method}{The agglomeration method to be used for hierarchical clustering. This should be one of
 "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC)

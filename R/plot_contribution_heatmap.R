@@ -5,8 +5,8 @@
 #' @param contribution Signature contribution matrix
 #' @param sig_order Character vector with the desired order of the signature names for plotting. Optional.
 #' @param sample_order Character vector with the desired order of the sample names for plotting. Optional.
-#' @param cluster_samples Hierarchically cluster samples based on eucledian distance. Default = T.
-#' @param cluster_sigs Hierarchically cluster sigs based on eucledian distance. Default = T.
+#' @param cluster_samples Hierarchically cluster samples based on euclidean distance. Default = T.
+#' @param cluster_sigs Hierarchically cluster sigs based on euclidean distance. Default = T.
 #' @param method The agglomeration method to be used for hierarchical clustering. This should be one of
 #' "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC)
 #' or "centroid" (= UPGMC). Default = "complete".

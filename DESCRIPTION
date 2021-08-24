@@ -17,7 +17,7 @@ Description: Mutational processes leave characteristic footprints in genomic DNA
     with common R genomic analysis workflows and allows easy association with
     (publicly available) annotation data.
 Version: 3.3.4
-Date: 2021-07-16
+Date: 2021-08-24
 Authors@R: c(
     person("Freek", "Manders", email = "F.M.Manders@prinsesmaximacentrum.nl", role = c("aut"), 
     comment = c(ORCID = "0000-0001-6197-347X")),

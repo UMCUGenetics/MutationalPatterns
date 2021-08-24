@@ -21,9 +21,9 @@ plot_contribution_heatmap(
 
 \item{sample_order}{Character vector with the desired order of the sample names for plotting. Optional.}
 
-\item{cluster_samples}{Hierarchically cluster samples based on eucledian distance. Default = T.}
+\item{cluster_samples}{Hierarchically cluster samples based on euclidean distance. Default = T.}
 
-\item{cluster_sigs}{Hierarchically cluster sigs based on eucledian distance. Default = T.}
+\item{cluster_sigs}{Hierarchically cluster sigs based on euclidean distance. Default = T.}
 
 \item{method}{The agglomeration method to be used for hierarchical clustering. This should be one of
 "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC)
