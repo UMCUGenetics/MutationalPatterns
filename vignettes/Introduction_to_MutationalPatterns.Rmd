@@ -14,10 +14,13 @@ author:
 - name: Rurika Oka
   affiliation:
     - Princess Maxima Center, Utrecht, The Netherlands
-  email: R.Oka@prinsesmaximacentrum.nl
 - name: Jurrian de Kanter
   affiliation:
     - Princess Maxima Center, Utrecht, The Netherlands
+- name: Mark van Roosmalen
+  affiliation:
+    - Princess Maxima Center, Utrecht, The Netherlands
+  email: M.J.vanRoosmalen-3@prinsesmaximacentrum.nl
 - name: Ruben van Boxtel
   affiliation:
     - Princess Maxima Center, Utrecht, The Netherlands
@@ -1495,6 +1498,46 @@ that of the rest of the genome.
 grl_region_dens <- split_muts_region(grl, regions_density, include_other = FALSE)
 ```
 
+
+## Unsupervised local mutational patterns
+Regional mutational patterns can also be investigated using an unsupervised
+approach with the `determine_regional_similarity` function. This function uses a
+sliding window approach to calculate the cosine similarity between the global
+mutation profile and the mutation profile of smaller genomic windows, allowing
+for the unbiased identification of regions with a mutation profile, that differs
+from the rest of the genome. Because of the unbiased approach of this function,
+it works best on a large dataset containing at least 100,000 substitutions.
+
+First we combine all our samples together. Normally, you would only do this for
+samples from the same cancer type/tissue, but here we combine everything because of
+the limited number of substitutions in our example data.
+```{r combine substitutions}
+gr = unlist(grl)
+```
+
+
+Next, regions with a mutational pattern that is different from the rest of the
+genome are identified. Here we use a small window size, because of the small
+size of the example data. In practice a window size of 100 or more works better.
+```{r determine_regional_similarity}
+regional_sims <- determine_regional_similarity(gr,
+                              ref_genome, 
+                              chromosomes = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6"),
+                              window_size = 40,
+                              stepsize = 10,
+                              max_window_size_gen = 40000000
+)
+```
+
+The results of `determine_regional_similarity` can be visualized. Each dot shows
+the cosine similarity between the mutation profiles of a single window and the
+rest of the genome. A region with a different mutation profile will have a lower
+cosine similarity. The dots are colored based on the sizes in mega bases of the
+windows. This size is the distance between the first and last mutations in a
+window.
+```{r plot_regional_similarity}
+plot_regional_similarity(regional_sims)
+```
 
 # Lesion segregation
 
