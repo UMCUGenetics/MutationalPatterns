@@ -15,6 +15,11 @@
 #'   per chromosome. Windows that span a too large region of the genome are
 #'   removed, because they are unlikely to contain biologically relevant
 #'   information.
+#'   
+#'   The number of mutations that the window slides to the right in each step is
+#'   called the stepsize. The best stepsize depends on the window size. In
+#'   general, we recommend setting the stepsize between 25% and 100% of the
+#'   window size.
 #'
 #'   The analysis can be performed for trinucleotides contexts, for a larger
 #'   context, or for just the base substitutions. A smaller context might miss
@@ -53,6 +58,7 @@
 #'   TRUE)
 #' @param max_window_size_gen The maximum size of a window before it is removed.
 #'   (Default: 20,000,000)
+#' @param verbose Boolean determining the verbosity of the function. (Default: FALSE)
 #'
 #' @return A "region_cossim" object containing both the cosine similarities and
 #'   the settings used in this analysis.
@@ -86,19 +92,24 @@
 #' ## Determine the regional similarities. Here we use a small window size to make the function work.
 #' ## In practice, we recommend a larger window size.
 #' regional_sims = determine_regional_similarity(gr,
-#'   ref_genome, chromosomes,
+#'   ref_genome, 
+#'   chromosomes,
 #'   window_size = 40,
 #'   stepsize = 10,
 #'   max_window_size_gen = 40000000
 #' )
 #' 
 #' ## Here we use an extensiof of 0 to reduce noise.
+#' ## We also turned verbosity on, so you can see at what step the function is.
+#' ## This can be useful on large datasets.
 #' regional_sims_0_extension = determine_regional_similarity(gr,
-#'   ref_genome, chromosomes,
+#'   ref_genome, 
+#'   chromosomes,
 #'   window_size = 40,
 #'   stepsize = 10,
 #'   extension = 0,
-#'   max_window_size_gen = 40000000
+#'   max_window_size_gen = 40000000,
+#'   verbose = TRUE
 #' )
 determine_regional_similarity <- function(vcf,
                                           ref_genome,
@@ -108,7 +119,8 @@ determine_regional_similarity <- function(vcf,
                                           extension = 1,
                                           oligo_correction = FALSE,
                                           exclude_self_mut_mat = TRUE,
-                                          max_window_size_gen = 20000000){
+                                          max_window_size_gen = 20000000,
+                                          verbose = FALSE){
     
     # These variables use non standard evaluation.
     # To avoid R CMD check complaints we initialize them to NULL.
@@ -132,13 +144,18 @@ determine_regional_similarity <- function(vcf,
     # This is done before preprocessing the gr, 
     # so that subsetting a single chromosome won't affect the global mutation matrix.
     mut_mat_total <- mut_matrix(vcf, ref_genome, extension)
-    message("Created main mutation matrix")
+    
+    if (verbose){
+        message("Created main mutation matrix")
+    }
     
     # Preprocess the gr
     GenomeInfoDb::seqlevels(vcf, pruning.mode = "coarse") <- chromosomes
     vcf <- BiocGenerics::sort(vcf)
-    message("Sorted the gr")
     
+    if (verbose){
+        message("Sorted the gr")
+    }
     
     # get chromosome lengths of reference genome
     chr_lengths <- GenomeInfoDb::seqlengths(vcf)
@@ -162,11 +179,11 @@ determine_regional_similarity <- function(vcf,
     # Determine the global nucleotide context if requested.
     if (oligo_correction == T){
         all_seq <- BSgenome::getSeq(ref_genome, chromosomes)
-        all_tricontext <- .get_oligo_contexts(all_seq, chromosomes, extension) %>% 
+        global_oligo_context <- .get_oligo_contexts(all_seq, chromosomes, extension) %>% 
             rowSums() %>%
             as.matrix()
     } else{
-        all_tricontext <- NA
+        global_oligo_context <- NA
     }
     # Calculate the cosine similarities between local windows and all global mutations per chromosome.
     gr_l <- as.list(grl)
@@ -176,10 +193,11 @@ determine_regional_similarity <- function(vcf,
                                                                      stepsize,
                                                                      extension,
                                                                      mut_mat_total,
-                                                                     all_tricontext = all_tricontext,
+                                                                     global_oligo_context,
                                                                      oligo_correction,
                                                                      exclude_self_mut_mat,
-                                                                     max_window_size_gen = max_window_size_gen))
+                                                                     max_window_size_gen,
+                                                                     verbose))
     
     # Extract the cosine similaries
     sim_tb <- sim_tb_l %>%
@@ -268,11 +286,12 @@ determine_regional_similarity <- function(vcf,
 #' @param extension The number of bases, that's extracted upstream and
 #' downstream of the base substitutions, to create the mutation matrices. 
 #' @param mut_mat_total Matrix containing mutation counts for all mutations.
-#' @param all_tricontext Matrix containing the global oligonucleotide frequencies. This is only used when,
+#' @param global_oligo_context Matrix containing the global oligonucleotide frequencies. This is only used when,
 #' correcting for oligonucleotide frequency.
 #' @param oligo_correction Boolean describing whether oligonucleotide frequency correction should be applied.
 #' @param exclude_self_mut_mat Boolean describing whether the mutations in a window should be subtracted from the global mutation matrix.
 #' @param max_window_size_gen The maximum size of a window before it is removed.
+#' @param verbose Boolean determining the verbosity of the function. (Default: FALSE)
 #'
 #' @return A list containing both the calculated similarities of the windows and the mutation positions.
 #' @noRd
@@ -284,10 +303,11 @@ determine_regional_similarity <- function(vcf,
                                  stepsize,
                                  extension,
                                  mut_mat_total, 
-                                 all_tricontext, 
+                                 global_oligo_context, 
                                  oligo_correction,
                                  exclude_self_mut_mat,
-                                 max_window_size_gen){
+                                 max_window_size_gen,
+                                 verbose){
     
     # These variables use non standard evaluation.
     # To avoid R CMD check complaints we initialize them to NULL.
@@ -337,7 +357,10 @@ determine_regional_similarity <- function(vcf,
     }
     
     window_pos <- pos[pos_i]
-    message(paste0("Determined window locations for chromosome: ", chr))
+    
+    if (verbose){
+        message(paste0("Determined window locations for chromosome: ", chr))
+    }
     
     # Create an index containing the position of all mutations of window 1, followed by window 2, ect.
     nr_windows <- length(window_i)
@@ -352,7 +375,10 @@ determine_regional_similarity <- function(vcf,
     types <- type_context(gr, ref_genome, extension)
     types_allwindows <- list("types" = types$types[all_seq], "context" = types$context[all_seq])
     mut_mat <- mut_96_occurrences(types_allwindows, rep(window_size, nr_windows))
-    message(paste0("Finished the mutation matrix for chromosome: ", chr))
+    
+    if (verbose){
+        message(paste0("Finished the mutation matrix for chromosome: ", chr))
+    }
     
     # Determine cosine similarity of local mut mats with the global.
     if (exclude_self_mut_mat){
@@ -381,7 +407,7 @@ determine_regional_similarity <- function(vcf,
             context_windows <- .get_oligo_contexts(window_seqs, extension = extension)
             
             # Determine the cosine similarity in nucleotide contexts of the windows with the global context.
-            context_sim <- cos_sim_matrix(context_windows, all_tricontext)
+            context_sim <- cos_sim_matrix(context_windows, global_oligo_context)
         }) %>% do.call(rbind, .)
 
         
@@ -393,7 +419,9 @@ determine_regional_similarity <- function(vcf,
             dplyr::mutate(window_sizes_mb = window_sizes / 1000000)
     }
     
-    message(paste0("Finished calculating for chromosome: ", chr))
+    if (verbose){
+        message(paste0("Finished calculating for chromosome: ", chr))
+    }
     return(list("sim_tb" =  sim_tb, "pos_tb" = pos_tb))
 }
 

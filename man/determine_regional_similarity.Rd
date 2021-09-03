@@ -13,7 +13,8 @@ determine_regional_similarity(
   extension = 1,
   oligo_correction = FALSE,
   exclude_self_mut_mat = TRUE,
-  max_window_size_gen = 2e+07
+  max_window_size_gen = 2e+07,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ TRUE)}
 
 \item{max_window_size_gen}{The maximum size of a window before it is removed.
 (Default: 20,000,000)}
+
+\item{verbose}{Boolean determining the verbosity of the function. (Default: FALSE)}
 }
 \value{
 A "region_cossim" object containing both the cosine similarities and
@@ -64,6 +67,11 @@ First a global mutation matrix is calculated using all mutations.
   per chromosome. Windows that span a too large region of the genome are
   removed, because they are unlikely to contain biologically relevant
   information.
+  
+  The number of mutations that the window slides to the right in each step is
+  called the stepsize. The best stepsize depends on the window size. In
+  general, we recommend setting the stepsize between 25% and 100% of the
+  window size.
 
   The analysis can be performed for trinucleotides contexts, for a larger
   context, or for just the base substitutions. A smaller context might miss
@@ -108,19 +116,24 @@ library(ref_genome, character.only = TRUE)
 ## Determine the regional similarities. Here we use a small window size to make the function work.
 ## In practice, we recommend a larger window size.
 regional_sims = determine_regional_similarity(gr,
-  ref_genome, chromosomes,
+  ref_genome, 
+  chromosomes,
   window_size = 40,
   stepsize = 10,
   max_window_size_gen = 40000000
 )
 
 ## Here we use an extensiof of 0 to reduce noise.
+## We also turned verbosity on, so you can see at what step the function is.
+## This can be useful on large datasets.
 regional_sims_0_extension = determine_regional_similarity(gr,
-  ref_genome, chromosomes,
+  ref_genome, 
+  chromosomes,
   window_size = 40,
   stepsize = 10,
   extension = 0,
-  max_window_size_gen = 40000000
+  max_window_size_gen = 40000000,
+  verbose = TRUE
 )
 }
 \seealso{

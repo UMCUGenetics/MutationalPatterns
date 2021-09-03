@@ -23,6 +23,7 @@ output = determine_regional_similarity(gr, ref_genome, chromosomes, window_size 
 output_oligo = determine_regional_similarity(gr, ref_genome, chromosomes[6], window_size = 40, stepsize = 40, oligo_correction = TRUE, max_window_size_gen = 40000000)
 output_notexcl = determine_regional_similarity(gr, ref_genome, chromosomes, window_size = 40, stepsize = 10, exclude_self_mut_mat = FALSE, max_window_size_gen = 40000000)
 output_smallext = determine_regional_similarity(gr, ref_genome, chromosomes, window_size = 40, stepsize = 10, extension = 0, max_window_size_gen = 40000000)
+output_verbose = determine_regional_similarity(gr, ref_genome, chromosomes, window_size = 40, stepsize = 10, max_window_size_gen = 40000000, verbose = TRUE)
 
 # Load expected
 expected <- readRDS(system.file("states/regional_sims.rds",
@@ -35,6 +36,7 @@ test_that("Output has correct class", {
   expect_true(inherits(output_oligo, c("region_cossim")))
   expect_true(inherits(output_notexcl, c("region_cossim")))
   expect_true(inherits(output_smallext, c("region_cossim")))
+  expect_true(inherits(output_verbose, c("region_cossim")))
 })
 
 test_that("Output has correct dimensions", {
@@ -46,6 +48,8 @@ test_that("Output has correct dimensions", {
   expect_equal(dim(output_notexcl@pos_tb), c(1789, 3))
   expect_equal(dim(output_smallext@sim_tb), c(152, 8))
   expect_equal(dim(output_smallext@pos_tb), c(1789, 3))
+  expect_equal(dim(output_verbose@sim_tb), c(152, 8))
+  expect_equal(dim(output_verbose@pos_tb), c(1789, 3))
 })
 
 test_that("transforms correctly", {
