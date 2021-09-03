@@ -5,9 +5,10 @@
 #' 
 #' @details
 #' Each dot shows the cosine similarity between the mutation profiles of a
-#' single window and the rest of the genome. The dots are colored based on the
-#' sizes in mega bases of the windows. This size is the distance between the
-#' first and last mutations of a window. The locations of the mutations are
+#' single window and the rest of the genome. A region with a different mutation
+#' profile will have a lower cosine similarity. The dots are colored based on
+#' the sizes in mega bases of the windows. This size is the distance between the
+#' first and last mutations in a window. The locations of the mutations can be
 #' plotted on the bottom of the figure. The cosine similarity can be plotted
 #' both with and without oligonucleotide frequency correction. This can be done
 #' for all chromosomes at once or separate plots can be made per chromosome.
@@ -21,6 +22,11 @@
 #' @param max_cossim Maximum cosine similarity for a window to be considered
 #'   an outlier. Any window with a lower cosine similarity is given a different
 #'   color. (Default: NA)
+#' @param title Optional plot title. (Default: NA). When the default option is
+#'   used, the number of mutations per window and the step size are shown.
+#' @param plot_rug Add a bottom rug to the plot, depicting the location of
+#'   the mutations. (Default: FALSE)
+#' @param x_axis_breaks Vector of custom x-axis breaks. (Default: NA)
 #'
 #' @return ggplot2 object
 #' 
@@ -43,15 +49,29 @@
 #' plot_regional_similarity(regional_sims)
 #' 
 #' ## Plot outlier samples with a different color.
+#' ## The value of 0.5 that is used here is arbitrarily chosen
+#' ## and should in practice be based on the data.
 #' plot_regional_similarity(regional_sims, max_cossim = 0.5)
 #' 
 #' ## Plot samples per chromosome
 #' fig_l = plot_regional_similarity(regional_sims, per_chrom = TRUE)
 #' 
+#' ## Plot without a title
+#' plot_regional_similarity(regional_sims, title = "")
+#' 
+#' ## Add a rug to the plot, that shows the location of the mutations.
+#' plot_regional_similarity(regional_sims, plot_rug = FALSE)
+#' 
+#' ## Use custom x axis breaks
+#' plot_regional_similarity(regional_sims, x_axis_breaks = c(50, 150))
+#' 
 plot_regional_similarity <- function(region_cossim, 
                                     per_chrom = FALSE, 
                                     oligo_correction = TRUE, 
-                                    max_cossim = NA){
+                                    max_cossim = NA,
+                                    title = NA,
+                                    plot_rug = FALSE,
+                                    x_axis_breaks = NA){
     
     # These variables use non standard evaluation.
     # To avoid R CMD check complaints we initialize them to NULL.
@@ -61,7 +81,9 @@ plot_regional_similarity <- function(region_cossim,
     max_chr_length <- max(region_cossim@chr_lengths / 1000000)
     
     #Set x-axis breaks
-    x_axis_breaks <- .get_x_axis_breaks(region_cossim, per_chrom)
+    if (.is_na(x_axis_breaks)){
+        x_axis_breaks <- .get_x_axis_breaks(region_cossim, per_chrom)
+    }
     
     #Get pos_tb and sim_tb.
     pos_tb <- region_cossim@pos_tb
@@ -98,7 +120,7 @@ plot_regional_similarity <- function(region_cossim,
     #Create plots
     if (per_chrom == FALSE){
         fig <- .plot_regional_similarity_gg(sim_tb, pos_tb, chrom_ends, x_axis_breaks, point_size, region_cossim@window_size,
-                                    region_cossim@stepsize, oligo_correction, max_cossim = max_cossim)
+                                    region_cossim@stepsize, oligo_correction, max_cossim = max_cossim, title, plot_rug)
         return(fig)   
     } else{
         sim_tb_l <- split(sim_tb, sim_tb$chr)
@@ -107,7 +129,8 @@ plot_regional_similarity <- function(region_cossim,
         fig_l <- purrr::pmap(list(sim_tb_l, pos_tb_l, chrom_ends_l),
                              .plot_regional_similarity_gg,
                      x_axis_breaks = x_axis_breaks, point_size = point_size, window_size = region_cossim@window_size,
-                     stepsize = region_cossim@stepsize, oligo_correction = oligo_correction, max_cossim = max_cossim)
+                     stepsize = region_cossim@stepsize, oligo_correction = oligo_correction, max_cossim = max_cossim,
+                     title = title, plot_rug = plot_rug)
         return(fig_l)
     }
 }
@@ -176,6 +199,10 @@ plot_regional_similarity <- function(region_cossim,
 #' @param max_cossim Maximum cosine similarity for a window to be considered
 #'   an outlier. Any window with a lower cosine similarity is given a different
 #'   color.
+#' @param title Optional plot title. (Default: NA). When the default option is
+#'   used, the number of mutations per window and the step size are shown.
+#' @param plot_rug Add a bottom rug to the plot, depicting the location of
+#'   the mutations. (Default: FALSE)
 #'
 #' @return ggplot2 object
 #' @noRd
@@ -190,7 +217,9 @@ plot_regional_similarity <- function(region_cossim,
                                       window_size, 
                                       stepsize, 
                                       oligo_correction, 
-                                      max_cossim){
+                                      max_cossim,
+                                      title,
+                                      plot_rug){
     
     # These variables use non standard evaluation.
     # To avoid R CMD check complaints we initialize them to NULL.
@@ -198,7 +227,9 @@ plot_regional_similarity <- function(region_cossim,
     
     
     # Create title
-    title <- paste0(window_size, " muts per window; stepsize: ", stepsize)
+    if (is.na(title)){
+        title <- paste0(" Mutations per window: ", window_size, "; Step size: ", stepsize)
+    }
     
     #Set max y axis and other details
     if (oligo_correction){
@@ -222,17 +253,22 @@ plot_regional_similarity <- function(region_cossim,
         colour_scale <- scale_color_manual(values = c("TRUE" = "red", "FALSE" = "blue"))
     } else{
         colour_lab <- "Window size (mb)"
-        sim_tb <- sim_tb %>% dplyr::mutate(colour = ifelse(window_sizes_mb > 4, 4, window_sizes_mb)) #Limits for colours
+        
+        # Limits for colours
+        sim_tb <- dplyr::mutate(sim_tb, colour = ifelse(window_sizes_mb > 4, 4, window_sizes_mb)) 
+        
+        # Use the blues gradient from RColorBrewer. 
+        # The lightest 3 colors are removed, because they were hard to see.
         colour_scale <- scale_color_gradientn(colours = rev(RColorBrewer::brewer.pal(9, "Blues")[4:9]), 
                                               limits = c(0,4), 
                                               labels = c(0, 1, 2, 3, ">4"), 
-                                              breaks = c(0, 1, 2,3, 4)) #Use the blues gradient from RColorBrewer. The lightest 3 colors are removed, because they were hard to see.
+                                              breaks = c(0, 1, 2,3, 4)) 
     }
     
+    # Create main figure
     fig <- ggplot(sim_tb, aes(x = window_pos_mb, y = !!sim_type)) +
         geom_blank(data = chrom_ends, aes(x = pos_mb, y = 0)) +
         geom_point(aes(colour = colour), size = point_size) +
-        geom_rug(data = pos_tb, aes(x = pos_mb, y = NULL), sides = "b", size = 0.005) +
         facet_grid(. ~ chr, scales = "free_x", space = "free_x") +
         labs(x = "Coordinate (mb)", y = y_lab, colour = colour_lab, title = title) +
         colour_scale +
@@ -240,5 +276,12 @@ plot_regional_similarity <- function(region_cossim,
         theme_bw() +
         scale_x_continuous(breaks = x_axis_breaks) +
         theme(text = element_text(size = 16), axis.text.x = element_text(size = 12), legend.position = "bottom")
+    
+    # Optionally add rug containing mutation positions.
+    if (plot_rug){
+        fig <- fig +
+            geom_rug(data = pos_tb, aes(x = pos_mb, y = NULL), sides = "b", size = 0.005)
+    }
+    
     return(fig)
 }

@@ -8,7 +8,10 @@ plot_regional_similarity(
   region_cossim,
   per_chrom = FALSE,
   oligo_correction = TRUE,
-  max_cossim = NA
+  max_cossim = NA,
+  title = NA,
+  plot_rug = FALSE,
+  x_axis_breaks = NA
 )
 }
 \arguments{
@@ -24,6 +27,14 @@ has been applied then the regular cosine similarities will be plotted.
 \item{max_cossim}{Maximum cosine similarity for a window to be considered
 an outlier. Any window with a lower cosine similarity is given a different
 color. (Default: NA)}
+
+\item{title}{Optional plot title. (Default: NA). When the default option is
+used, the number of mutations per window and the step size are shown.}
+
+\item{plot_rug}{Add a bottom rug to the plot, depicting the location of
+the mutations. (Default: FALSE)}
+
+\item{x_axis_breaks}{Vector of custom x-axis breaks. (Default: NA)}
 }
 \value{
 ggplot2 object
@@ -34,9 +45,10 @@ with the rest of the genome.
 }
 \details{
 Each dot shows the cosine similarity between the mutation profiles of a
-single window and the rest of the genome. The dots are colored based on the
-sizes in mega bases of the windows. This size is the distance between the
-first and last mutations of a window. The locations of the mutations are
+single window and the rest of the genome. A region with a different mutation
+profile will have a lower cosine similarity. The dots are colored based on
+the sizes in mega bases of the windows. This size is the distance between the
+first and last mutations in a window. The locations of the mutations can be
 plotted on the bottom of the figure. The cosine similarity can be plotted
 both with and without oligonucleotide frequency correction. This can be done
 for all chromosomes at once or separate plots can be made per chromosome.
@@ -53,10 +65,21 @@ regional_sims <- readRDS(system.file("states/regional_sims.rds",
 plot_regional_similarity(regional_sims)
 
 ## Plot outlier samples with a different color.
+## The value of 0.5 that is used here is arbitrarily chosen
+## and should in practice be based on the data.
 plot_regional_similarity(regional_sims, max_cossim = 0.5)
 
 ## Plot samples per chromosome
 fig_l = plot_regional_similarity(regional_sims, per_chrom = TRUE)
+
+## Plot without a title
+plot_regional_similarity(regional_sims, title = "")
+
+## Add a rug to the plot, that shows the location of the mutations.
+plot_regional_similarity(regional_sims, plot_rug = FALSE)
+
+## Use custom x axis breaks
+plot_regional_similarity(regional_sims, x_axis_breaks = c(50, 150))
 
 }
 \seealso{
