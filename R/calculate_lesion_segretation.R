@@ -467,8 +467,15 @@ calculate_lesion_segregation <- function(vcf_list,
 
   # Determine index of the first mutation of the runs in set.
   # The index of the last mutation in the previous run is used for this.
-  start_i <- cumsum_runs[order_i_set - 1] + 1
-
+  # If the first run is in the rl20, then it has to be set separately.
+  first_run_i <- which(order_i_set == 1)
+  if (length(first_run_i)){
+    order_i_set[first_run_i] <- 2
+    start_i <- cumsum_runs[order_i_set - 1] + 1
+    start_i[first_run_i] <- 1
+  } else{
+    start_i <- cumsum_runs[order_i_set - 1] + 1
+  }
   # Determine index of the last mutation of the runs in set.
   end_i <- cumsum_runs[order_i_set]
 
