@@ -113,6 +113,11 @@ plot_lesion_segregation <- function(vcf,
     .not_gr_or_grl(vcf_list)
   }
   
+  # Turn the sample column into a factor.
+  # This ensures the correct order of the samples in the plot.
+  tb <- dplyr::mutate(tb, sample = factor(sample, levels = unique(sample)))
+  
+  
   ## set chrom order
   if (!.is_na(chromosomes)) {
     chromosomes <- as.character(chromosomes)
@@ -152,7 +157,7 @@ plot_lesion_segregation <- function(vcf,
   chr_limits <- rbind(chr_starts, chr_ends)
   
   # Per sample limits
-  tb_limits <- tibble::tibble("sample" = rep(sample_names, each = 2 * nr_chroms),
+  tb_limits <- tibble::tibble("sample" = factor(rep(sample_names, each = 2 * nr_chroms), levels = levels(tb$sample)),
                           "start_mb" = rep(chr_limits$start_mb, nr_samples),
                           "seqnames" = factor(rep(chr_limits$seqnames, nr_samples), levels = chroms),
                           "y" = 0.5)
@@ -165,7 +170,8 @@ plot_lesion_segregation <- function(vcf,
     dplyr::ungroup() %>% 
     dplyr::right_join(tb_limits[,c("sample", "seqnames", "start_mb")], 
                                 by = c("seqnames", "sample")) %>% 
-    dplyr::filter(n >= min_muts_mean)
+    dplyr::filter(n >= min_muts_mean) %>% 
+    dplyr::mutate(sample = factor(sample, levels = levels(tb$sample)))
 
   # Set point_sizes
   point_size <- 200 / max_nr_mutations
