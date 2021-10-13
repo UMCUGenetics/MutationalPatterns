@@ -1,3 +1,20 @@
+MutationalPatterns v3.3.5 (Release date: 2021-10-13)
+
+Changes:
+
+* New features:
+  + Regional mutational patterns can now be investigated using an unsupervised 
+    approach with the determine_regional_similarity and plot_regional_similarity functions.
+    This method can identify regions of the genome with a mutational pattern that is different
+    from the rest of the genome.
+
+* Bugfixes:
+  + plot_rainfall now gives a clearer error when a GRangesList is used, instead of a GRanges object.
+  + The order of the samples in the plot created by plot_lesion_segregation now matches that in the GRangesList.
+  + Fixed a bug in calculate_lesion_segregation that occurred when a run in the rl20 contained the first mutation in a sample.
+
+
+
 MutationalPatterns v3.3.4 (Release date: 2021-07-16)
 
 Changes:
