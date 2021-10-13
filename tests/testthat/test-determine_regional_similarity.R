@@ -3,7 +3,7 @@ context("test-determine_regional_similarity")
 # See the 'read_vcfs_as_granges()' example for how we obtained the
 # following data:
 grl <- readRDS(system.file("states/read_vcfs_as_granges_output.rds",
-  package = "MutationalPatterns"
+                           package = "MutationalPatterns"
 ))
 
 # We pool all the variants together, because the function doesn't work well with a limited number of mutations.
@@ -11,7 +11,7 @@ grl <- readRDS(system.file("states/read_vcfs_as_granges_output.rds",
 gr = unlist(grl)
 
 # Specifiy the chromosomes of interest.
-chromosomes <- names(genome(gr)[1:6])
+chromosomes <- names(genome(gr)[1:3])
 
 # Load the corresponding reference genome.
 ref_genome <- "BSgenome.Hsapiens.UCSC.hg19"
@@ -20,14 +20,14 @@ library(ref_genome, character.only = TRUE)
 # Determine the regional similarities. Here we use a small window size to make the function work.
 # In practice, we recommend a larger window size.
 output = determine_regional_similarity(gr, ref_genome, chromosomes, window_size = 40, stepsize = 10, max_window_size_gen = 40000000)
-output_oligo = determine_regional_similarity(gr, ref_genome, chromosomes[6], window_size = 40, stepsize = 40, oligo_correction = TRUE, max_window_size_gen = 40000000)
+output_oligo = determine_regional_similarity(gr, ref_genome, chromosomes[3], window_size = 60, stepsize = 60, oligo_correction = TRUE, max_window_size_gen = 40000000)
 output_notexcl = determine_regional_similarity(gr, ref_genome, chromosomes, window_size = 40, stepsize = 10, exclude_self_mut_mat = FALSE, max_window_size_gen = 40000000)
 output_smallext = determine_regional_similarity(gr, ref_genome, chromosomes, window_size = 40, stepsize = 10, extension = 0, max_window_size_gen = 40000000)
-output_verbose = determine_regional_similarity(gr, ref_genome, chromosomes, window_size = 40, stepsize = 10, max_window_size_gen = 40000000, verbose = TRUE)
+output_verbose = determine_regional_similarity(gr, ref_genome, chromosomes, window_size = 40, stepsize = 40, max_window_size_gen = 40000000, verbose = TRUE)
 
 # Load expected
 expected <- readRDS(system.file("states/regional_sims.rds",
-  package = "MutationalPatterns"
+                                package = "MutationalPatterns"
 ))
 
 # Run tests
@@ -40,20 +40,21 @@ test_that("Output has correct class", {
 })
 
 test_that("Output has correct dimensions", {
-  expect_equal(dim(output@sim_tb), c(152, 8))
-  expect_equal(dim(output@pos_tb), c(1789, 3))
-  expect_equal(dim(output_oligo@sim_tb), c(6, 10))
-  expect_equal(dim(output_oligo@pos_tb), c(269, 3))
-  expect_equal(dim(output_notexcl@sim_tb), c(152, 8))
-  expect_equal(dim(output_notexcl@pos_tb), c(1789, 3))
-  expect_equal(dim(output_smallext@sim_tb), c(152, 8))
-  expect_equal(dim(output_smallext@pos_tb), c(1789, 3))
-  expect_equal(dim(output_verbose@sim_tb), c(152, 8))
-  expect_equal(dim(output_verbose@pos_tb), c(1789, 3))
+  expect_equal(dim(output@sim_tb), c(76, 8))
+  expect_equal(dim(output@pos_tb), c(915, 3))
+  expect_equal(dim(output_oligo@sim_tb), c(2, 10))
+  expect_equal(dim(output_oligo@pos_tb), c(294, 3))
+  expect_equal(dim(output_notexcl@sim_tb), c(76, 8))
+  expect_equal(dim(output_notexcl@pos_tb), c(915, 3))
+  expect_equal(dim(output_smallext@sim_tb), c(76, 8))
+  expect_equal(dim(output_smallext@pos_tb), c(915, 3))
+  expect_equal(dim(output_verbose@sim_tb), c(21, 8))
+  expect_equal(dim(output_verbose@pos_tb), c(915, 3))
 })
 
 test_that("transforms correctly", {
-  expect_equal(output, expected)
+  expect_equal(output@sim_tb, expected@sim_tb)
+  expect_equal(output@pos_tb, expected@pos_tb)
 })
 
 test_that("exclude_self_mut_mat reduces cosine similarity", {

@@ -107,7 +107,7 @@ grl <- readRDS(system.file("states/read_vcfs_as_granges_output.rds",
 gr = unlist(grl)
 
 ## Specifiy the chromosomes of interest.
-chromosomes <- names(genome(gr)[1:6])
+chromosomes <- names(genome(gr)[1:3])
 
  ## Load the corresponding reference genome.
 ref_genome <- "BSgenome.Hsapiens.UCSC.hg19"

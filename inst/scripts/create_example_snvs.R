@@ -126,7 +126,7 @@ saveRDS(context_mismatches, "inst/states/context_mismatches.rds")
 
 
 # Specifiy the chromosomes of interest.
-chromosomes <- names(genome(grl)[1:6])
+chromosomes <- names(genome(grl)[1:3])
 regional_sims = determine_regional_similarity(unlist(grl), ref_genome, chromosomes, window_size = 40, stepsize = 10, max_window_size_gen = 40000000)
 saveRDS(regional_sims, "inst/states/regional_sims.rds")
 

@@ -33,5 +33,5 @@ test_that("Output has correct class", {
 })
 
 test_that("Output per chromosome has correct length", {
-    expect_equal(length(output_l), 6)
+    expect_equal(length(output_l), 3)
 })
