@@ -1,3 +1,13 @@
+MutationalPatterns v3.5.1 (Release date: 2021-11-03)
+
+Changes:
+
+* Other:
+  + Bumped version number and required R version for the new Bioconductor release cycle.
+  + Updated citation to bioRxiv manuscript.
+
+
+
 MutationalPatterns v3.3.5 (Release date: 2021-10-13)
 
 Changes:

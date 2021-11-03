@@ -1,17 +1,23 @@
 citEntry(
     entry = "article",
-    title = "MutationalPatterns: comprehensive genome-wide analysis of mutational processes",
+    title = "MutationalPatterns: The one stop shop for the analysis of mutational processes",
     author = personList(
-        as.person("Francis Blokzijl"),
-        as.person("Roel Janssen"),
-        as.person("Ruben van Boxtel"),
-        as.person("Edwin Cuppen")
+        as.person("Freek Manders"),
+        as.person("Arianne M. Brandsma"),
+        as.person("Jurrian de Kanter"),
+        as.person("Mark Verheul"),
+        as.person("Rurika Oka"),
+        as.person("Markus J. van Roosmalen"),
+        as.person("Bastiaan van der Roest"),
+        as.person("Arne van Hoeck"),
+        as.person("Edwin Cuppen"),
+        as.person("Ruben van Boxtel")
     ),
-    year = 2018,
-    journal = "Genome Medicine",
-    doi = "10.1186/s13073-018-0539-0",
+    year = 2021,
+    journal = "bioRxiv",
+    doi = "10.1101/2021.11.01.466730",
     textVersion =
-        paste("Francis Blokzijl, Roel Janssen, Ruben van Boxtel, Edwin Cuppen (2018):",
-              "MutationalPatterns: comprehensive genome-wide analysis of mutational processes",
-              "Genome Medicine", "doi:10.1186/s13073-018-0539-0")
+        paste("Freek Manders, Arianne M. Brandsma, Jurrian de Kanter, Mark Verheul, Rurika Oka, Markus J. van Roosmalen, Bastiaan van der Roest, Arne van Hoeck, Edwin Cuppen, Ruben van Boxtel (2021):",
+              "MutationalPatterns: The one stop shop for the analysis of mutational processes",
+              "bioRxiv", "doi:10.1101/2021.11.01.466730")
 )

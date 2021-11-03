@@ -35,7 +35,7 @@ Authors@R: c(
     person("Edwin", "Cuppen", role = "aut",
     comment = c(ORCID = "0000-0002-0400-9542")))
 License: MIT + file LICENSE
-URL: https://doi.org/10.1186/s13073-018-0539-0
+URL: https://doi.org/10.1101/2021.11.01.466730
 Imports:
     stats,
     S4Vectors,
