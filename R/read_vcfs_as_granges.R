@@ -26,13 +26,19 @@
 #'              * 'mbs'
 #'              * 'all'
 #'    When you use 'all', no filtering or merging of variants is performed.
-#' @param change_seqnames Boolean. Whether to change the seqnamesStyle of the
+#' @param change_seqnames Boolean. Whether to change the seqlevelsStyle of the
 #'   vcf to that of the BSgenome object. (default = TRUE)
 #' @param predefined_dbs_mbs Boolean. Whether DBS and MBS variants have been
 #'    predefined in your vcf. This function by default assumes that DBS and MBS
 #'    variants are present in the vcf as SNVs, which are positioned next to each
 #'    other. If your DBS/MBS variants are called separately you should set this
 #'    argument to TRUE. (default = FALSE)
+#' @param remove_duplicate_variants Boolean. Whether duplicate variants are
+#'   removed. This is based on genomic coordinates and does not take the
+#'   alternative bases into account. It is generally recommended to keep this
+#'   on. Turning this off can result in warnings in plot_rainfall. When a
+#'   duplicate SNV is identified as part of a DBS, only a single DBS, instead of
+#'   a duplicate DBS will be formed. (default = TRUE)
 #'
 #' @return A GRangesList containing the GRanges obtained from 'vcf_files'
 #'
@@ -86,7 +92,8 @@ read_vcfs_as_granges <- function(vcf_files,
                                  group = c("auto+sex", "auto", "sex", "circular", "all", "none"),
                                  type = c("snv", "indel", "dbs", "mbs", "all"),
                                  change_seqnames = TRUE,
-                                 predefined_dbs_mbs = FALSE) {
+                                 predefined_dbs_mbs = FALSE,
+                                 remove_duplicate_variants = TRUE) {
 
   # Match arguments
   type <- match.arg(type)
@@ -108,7 +115,7 @@ read_vcfs_as_granges <- function(vcf_files,
   )
 
   # Read vcfs
-  grl <- purrr::map(vcf_files, .read_single_vcf_as_grange, genome, group, change_seqnames) %>%
+  grl <- purrr::map(vcf_files, .read_single_vcf_as_grange, genome, group, change_seqnames, remove_duplicate_variants) %>%
     GenomicRanges::GRangesList()
 
   # Filter for mutation type
@@ -140,13 +147,19 @@ read_vcfs_as_granges <- function(vcf_files,
 #'              * 'circular' for circular chromosomes;
 #'              * 'none' for no filtering, which results in keeping all
 #'                seqlevels from the VCF file.
-#' @param change_seqnames Boolean. Whether to change the seqnamesStyle of the vcf
-#' to that of the BSgenome object.
+#' @param change_seqnames Boolean. Whether to change the seqlevelStyle of the
+#'   vcf to that of the BSgenome object.
+#' @param remove_duplicate_variants Boolean. Whether duplicate variants are
+#'   removed. This is based on genomic coordinates and does not take the
+#'   alternative bases into account. It is generally recommended to keep this
+#'   on. Turning this off can result in warnings in plot_rainfall. When a
+#'   duplicate SNV is identified as part of a DBS, only a single DBS, instead of
+#'   a duplicate DBS will be formed. (default = TRUE)
 #' @return A GRanges object
 #' @importFrom magrittr %>%
 #' @noRd
 #'
-.read_single_vcf_as_grange <- function(vcf_file, genome, group, change_seqnames) {
+.read_single_vcf_as_grange <- function(vcf_file, genome, group, change_seqnames, remove_duplicate_variants) {
 
   # Use VariantAnnotation's readVcf, but only store the
   # GRanges information in memory.  This speeds up the
@@ -216,16 +229,18 @@ read_vcfs_as_granges <- function(vcf_files,
   }
 
   # Check for duplicate variants
-  nr_duplicated <- gr %>%
-    duplicated() %>%
-    sum()
-  if (nr_duplicated) {
-    warning(paste0(
-      "There were ", nr_duplicated, " duplicated variants in vcf file: ",
-      vcf_file,
-      " They have been filtered out."
-    ), call. = FALSE)
-    gr <- BiocGenerics::unique(gr)
+  if (remove_duplicate_variants == TRUE){
+    nr_duplicated <- gr %>%
+      duplicated() %>%
+      sum()
+    if (nr_duplicated) {
+      warning(paste0(
+        "There were ", nr_duplicated, " duplicated variants in vcf file: ",
+        vcf_file,
+        " They have been filtered out."
+      ), call. = FALSE)
+      gr <- BiocGenerics::unique(gr)
+    }
   }
 
   return(gr)

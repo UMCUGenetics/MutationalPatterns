@@ -1,3 +1,11 @@
+MutationalPatterns v3.5.2 (Release date: 2021-11-23)
+
+Changes:
+
+* Other:
+  + read_vcfs_as_granges will now keep duplicate variants if the new remove_duplicate_variants option is set to FALSE.
+
+
 MutationalPatterns v3.5.1 (Release date: 2021-11-03)
 
 Changes:

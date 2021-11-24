@@ -148,3 +148,14 @@ test_that("Empty vcf works", {
   expect_true(inherits(output, "CompressedGRangesList"))
   expect_equal(length(output[[1]]), 0)
 })
+
+# Test that it is possible to keep duplicate variants
+duplicate_vcf <- list.files(system.file("extdata", package = "MutationalPatterns"),
+                        pattern = "duplicate.vcf", full.names = TRUE
+)
+
+test_that("Empty vcf works", {
+  output <- read_vcfs_as_granges(duplicate_vcf, "duplicate", ref_genome, remove_duplicate_variants = F)
+  expect_true(inherits(output, "CompressedGRangesList"))
+  expect_equal(length(output[[1]]), 2)
+})

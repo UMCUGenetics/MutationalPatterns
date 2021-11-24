@@ -11,7 +11,8 @@ read_vcfs_as_granges(
   group = c("auto+sex", "auto", "sex", "circular", "all", "none"),
   type = c("snv", "indel", "dbs", "mbs", "all"),
   change_seqnames = TRUE,
-  predefined_dbs_mbs = FALSE
+  predefined_dbs_mbs = FALSE,
+  remove_duplicate_variants = TRUE
 )
 }
 \arguments{
@@ -40,7 +41,7 @@ of this group will be removed.  Possible values:
           * 'all'
 When you use 'all', no filtering or merging of variants is performed.}
 
-\item{change_seqnames}{Boolean. Whether to change the seqnamesStyle of the
+\item{change_seqnames}{Boolean. Whether to change the seqlevelsStyle of the
 vcf to that of the BSgenome object. (default = TRUE)}
 
 \item{predefined_dbs_mbs}{Boolean. Whether DBS and MBS variants have been
@@ -48,6 +49,13 @@ predefined in your vcf. This function by default assumes that DBS and MBS
 variants are present in the vcf as SNVs, which are positioned next to each
 other. If your DBS/MBS variants are called separately you should set this
 argument to TRUE. (default = FALSE)}
+
+\item{remove_duplicate_variants}{Boolean. Whether duplicate variants are
+removed. This is based on genomic coordinates and does not take the
+alternative bases into account. It is generally recommended to keep this
+on. Turning this off can result in warnings in plot_rainfall. When a
+duplicate SNV is identified as part of a DBS, only a single DBS, instead of
+a duplicate DBS will be formed. (default = TRUE)}
 }
 \value{
 A GRangesList containing the GRanges obtained from 'vcf_files'
