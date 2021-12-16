@@ -1,3 +1,11 @@
+MutationalPatterns v3.5.3 (Release date: 2021-12-16)
+
+Changes:
+
+* Other:
+  + cos_sim_matrix can now accept tibbles as its input.
+  + cos_sim_matrix now throws a clearer error when non-numeric inputs are used.
+
 MutationalPatterns v3.5.2 (Release date: 2021-11-23)
 
 Changes:

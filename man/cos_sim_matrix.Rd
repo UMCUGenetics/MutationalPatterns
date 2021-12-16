@@ -7,9 +7,9 @@
 cos_sim_matrix(mut_matrix1, mut_matrix2)
 }
 \arguments{
-\item{mut_matrix1}{96 mutation count matrix (dimensions: 96 mutations X n samples)}
+\item{mut_matrix1}{mutation count matrix (dimensions: a mutation features X n samples)}
 
-\item{mut_matrix2}{96 mutation count matrix (dimensions: 96 mutations X m samples)}
+\item{mut_matrix2}{96 mutation count matrix (dimensions: a mutation features X m samples)}
 }
 \value{
 Matrix with pairwise cosine similarities (dimensions: n mutational profiles X m mutational profiles)
