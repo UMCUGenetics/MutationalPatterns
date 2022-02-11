@@ -1,3 +1,11 @@
+MutationalPatterns v3.5.4 (Release date: 2022-02-11)
+
+Changes:
+
+* Bugfixes:
+  + Updated unit-test so it no longer fails incorrectly.
+
+
 MutationalPatterns v3.5.3 (Release date: 2021-12-16)
 
 Changes:

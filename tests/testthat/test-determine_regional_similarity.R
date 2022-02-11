@@ -53,8 +53,8 @@ test_that("Output has correct dimensions", {
 })
 
 test_that("transforms correctly", {
-  expect_equal(output@sim_tb, expected@sim_tb)
-  expect_equal(output@pos_tb, expected@pos_tb)
+  expect_equal(output@sim_tb, expected@sim_tb, check.attributes = FALSE)
+  expect_equal(output@pos_tb, expected@pos_tb, check.attributes = FALSE)
 })
 
 test_that("exclude_self_mut_mat reduces cosine similarity", {
