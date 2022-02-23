@@ -13,11 +13,11 @@ citEntry(
         as.person("Edwin Cuppen"),
         as.person("Ruben van Boxtel")
     ),
-    year = 2021,
-    journal = "bioRxiv",
-    doi = "10.1101/2021.11.01.466730",
+    year = 2022,
+    journal = "BMC Genomics",
+    doi = "10.1186/s12864-022-08357-3",
     textVersion =
-        paste("Freek Manders, Arianne M. Brandsma, Jurrian de Kanter, Mark Verheul, Rurika Oka, Markus J. van Roosmalen, Bastiaan van der Roest, Arne van Hoeck, Edwin Cuppen, Ruben van Boxtel (2021):",
+        paste("Freek Manders, Arianne M. Brandsma, Jurrian de Kanter, Mark Verheul, Rurika Oka, Markus J. van Roosmalen, Bastiaan van der Roest, Arne van Hoeck, Edwin Cuppen, Ruben van Boxtel (2022):",
               "MutationalPatterns: The one stop shop for the analysis of mutational processes",
-              "bioRxiv", "doi:10.1101/2021.11.01.466730")
+              "BMC Genomics", "doi:10.1186/s12864-022-08357-3")
 )
