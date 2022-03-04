@@ -24,6 +24,7 @@
 #' less signatures when errors occur, but this parameter can be used when that
 #' is not an option.
 #' Default = NULL.
+#' @param seed Random seed used for the regular NMF, default = 123456
 #'
 #' @return Named list of mutation matrix, signatures and signature contribution
 #'
@@ -51,7 +52,8 @@ extract_signatures <- function(mut_matrix,
                                nrun = 200, 
                                nmf_type = c("regular", "variational_bayes"), 
                                single_core = FALSE, 
-                               fudge = NULL) {
+                               fudge = NULL,
+                               seed = 123456) {
   # Match argument
   nmf_type <- match.arg(nmf_type)
 
@@ -73,9 +75,9 @@ extract_signatures <- function(mut_matrix,
   if (nmf_type == "regular") {
     # Calculate NMF
     if (single_core){
-      res <- NMF::nmf(mut_matrix, rank = rank, method = "brunet", nrun = nrun, seed = 123456, .opt = "v-p")
+      res <- NMF::nmf(mut_matrix, rank = rank, method = "brunet", nrun = nrun, seed = seed, .opt = "v-p")
     } else{
-      res <- NMF::nmf(mut_matrix, rank = rank, method = "brunet", nrun = nrun, seed = 123456)
+      res <- NMF::nmf(mut_matrix, rank = rank, method = "brunet", nrun = nrun, seed = seed)
     }
     # Find signatures and contribution of signatures
     signatures <- NMF::basis(res)

@@ -10,7 +10,8 @@ extract_signatures(
   nrun = 200,
   nmf_type = c("regular", "variational_bayes"),
   single_core = FALSE,
-  fudge = NULL
+  fudge = NULL,
+  seed = 123456
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ when extracting many signatures at once. In general, we recommend extracting
 less signatures when errors occur, but this parameter can be used when that
 is not an option.
 Default = NULL.}
+
+\item{seed}{Random seed used for the regular NMF, default = 123456}
 }
 \value{
 Named list of mutation matrix, signatures and signature contribution
