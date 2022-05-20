@@ -1,3 +1,11 @@
+MutationalPatterns v3.7.1 (Release date: 2022-05-20)
+
+Changes:
+
+* Other:
+  + Update version number to match new Bioconductor release.
+  + Fixed a mistake in the description of the get_known_signatures function.
+
 MutationalPatterns v3.5.6 (Release date: 2022-03-04)
 
 Changes:

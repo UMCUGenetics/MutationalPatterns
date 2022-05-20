@@ -70,7 +70,7 @@
 #'              * 'exposure';
 #'              * 'tissue';
 #' @param incl_poss_artifacts Whether to include possible
-#' artifacts. (default: TRUE)
+#' artifacts. (default: FALSE)
 #' @param tissue_type The specific tissue to select signatures from.
 #' Can only be used when looking at tissue specific signatures.
 #' Keep this at NA to see tissue specific signatures for all tissues.
