@@ -145,7 +145,7 @@ plot_rainfall <- function(vcf,
   }
 
   # Sort the input
-  vcf <- BiocGenerics::sort(vcf)
+  vcf <- BiocGenerics::sort(vcf, ignore.strand = TRUE)
 
   # subset on the chromosomes selected by the user.
   chr_length <- chr_length[names(chr_length) %in% chromosomes]
