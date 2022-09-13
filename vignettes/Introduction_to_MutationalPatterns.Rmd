@@ -73,8 +73,8 @@ with common R genomic analysis workflows and allows easy association with
 Background on the biological relevance of the different mutational patterns, a
 practical illustration of the package functionalities, comparison with similar
 tools and software packages and an elaborate discussion, are described in the
-new MutationalPatterns article, which is in currently being written. The old article can be
-found [here](https://doi.org/10.1186/s13073-018-0539-0).
+new MutationalPatterns article, which is published in [BMC Genomics](https://doi.org/doi:10.1186/s12864-022-08357-3).
+The original article is published in [Genome Medicine](https://doi.org/10.1186/s13073-018-0539-0).
 
 This vignette shows some common ways in which the functions in this package can
 be used. It is however not exhaustive and won't show every argument of every

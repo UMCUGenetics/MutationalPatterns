@@ -11,8 +11,8 @@ catalogues. Single nucleotide variants (SNVs), insertions and deletions
 Please give credit and cite the MutationalPatterns R Package when you use it for
 your data analysis. A paper for the newest version of the package is published in 
 [BMC Genomics](https://doi.org/doi:10.1186/s12864-022-08357-3).
-The original MutationalPatterns paper is published in Genome Medicine
-[Blokzijl et al. 2018](https://doi.org/10.1186/s13073-018-0539-0).
+The original MutationalPatterns paper is published in 
+[Genome Medicine](https://doi.org/10.1186/s13073-018-0539-0).
 
 
 ## Dev version
