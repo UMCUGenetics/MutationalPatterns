@@ -1,3 +1,5 @@
+***This project is no longer actively maintained. Please use the new version, which can be found [here](https://github.com/ToolsVanBox/MutationalPatterns)***
+
 # MutationalPatterns
 
 The MutationalPatterns R package provides a comprehensive set of flexible
